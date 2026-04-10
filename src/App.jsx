@@ -220,6 +220,11 @@ const App = () => {
       <Routes>
         <Route path="/" element={<Landing />} />
         <Route path="/auth/*" element={<AuthRoutes />} />
+        {/* Back/Forward can restore protected URLs after logout; realign to landing instead of * → 404 */}
+        <Route path="/store/*" element={<Navigate to="/" replace />} />
+        <Route path="/cashier/*" element={<Navigate to="/" replace />} />
+        <Route path="/branch/*" element={<Navigate to="/" replace />} />
+        <Route path="/super-admin/*" element={<Navigate to="/" replace />} />
         <Route
           path="*"
           element={

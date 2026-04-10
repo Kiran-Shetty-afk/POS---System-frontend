@@ -58,7 +58,7 @@ export function DashboardUserMenu({
 
   const handleLogout = () => {
     dispatch(logout());
-    navigate("/auth/login");
+    navigate("/auth/login", { replace: true });
   };
 
   return (

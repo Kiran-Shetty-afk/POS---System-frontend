@@ -72,7 +72,7 @@ export default function BranchManagerSidebar() {
 
   const handleLogout = () => {
     dispatch(logout());
-    navigate("/auth/login");
+    navigate("/auth/login", { replace: true });
   };
 
   return (

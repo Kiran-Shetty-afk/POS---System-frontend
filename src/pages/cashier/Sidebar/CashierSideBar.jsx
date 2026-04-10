@@ -29,8 +29,8 @@ const CashierSideBar = ({ navItems, onClose }) => {
   }, [dispatch, userProfile]);
 
   const handleLogout = () => {
-    dispatch(logout())
-    navigate("/") 
+    dispatch(logout());
+    navigate("/", { replace: true });
   };
 
   return (

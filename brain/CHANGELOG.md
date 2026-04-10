@@ -4,6 +4,16 @@ All entries are dated and versioned for uniqueness.
 
 ---
 
+## brain-2026-04-10-030
+
+**Date:** 2026-04-10
+
+**Summary:** After logout, **browser Back** could restore a protected URL (e.g. `/store/...`) while the session was cleared; the logged-out `<Routes>` had no match → **404**. Added `/store/*`, `/cashier/*`, `/branch/*`, `/super-admin/*` → **`/`** (Landing) when logged out, and used **`navigate(..., { replace: true })`** after logout so the post-login entry does not stack on top of dashboard history.
+
+**Changed:** `src/App.jsx`, `src/components/layout/DashboardUserMenu.jsx`, `src/pages/store/Dashboard/StoreSidebar.jsx`, `src/pages/Branch Manager/Dashboard/BranchManagerSidebar.jsx`, `src/pages/SuperAdminDashboard/components/SuperAdminSidebar.jsx`, `src/pages/cashier/Sidebar/CashierSideBar.jsx`, `src/pages/cashier/ShiftSummary/ShiftSummaryPage.jsx`, `brain/CHANGELOG.md`
+
+---
+
 ## brain-2026-04-10-029
 
 **Date:** 2026-04-10

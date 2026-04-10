@@ -50,7 +50,7 @@ export default function SuperAdminSidebar() {
 
   const handleLogout = () => {
     dispatch(logout());
-    navigate("/auth/login");
+    navigate("/auth/login", { replace: true });
   };
 
   return (

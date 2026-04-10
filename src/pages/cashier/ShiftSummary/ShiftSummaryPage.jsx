@@ -41,7 +41,7 @@ const ShiftSummaryPage = () => {
     setShowLogoutConfirmDialog(false);
     dispatch(endShift());
     dispatch(logout());
-    navigate("/");
+    navigate("/", { replace: true });
     toast({
       title: 'Shift Ended',
       description: 'You have been logged out successfully',
