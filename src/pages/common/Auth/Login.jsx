@@ -22,6 +22,7 @@ import {
 import { startShift } from '../../../Redux Toolkit/features/shiftReport/shiftReportThunks'
 import { ThemeToggle } from '../../../components/theme-toggle'
 import { forgotPassword } from '../../../Redux Toolkit/features/auth/authThunk'
+import { normalizeAppRole } from '@/utils/userRole'
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false)
@@ -80,7 +81,7 @@ const Login = () => {
         console.log("Login success:", user.role)
 
         // Redirect based on user role (replace so browser Back does not return to login/auth)
-        const userRole = user.role
+        const userRole = normalizeAppRole(user.role)
         if (userRole === "ROLE_BRANCH_CASHIER") {
           navigate("/cashier", { replace: true })
           dispatch(startShift(user.branchId))
@@ -307,9 +308,12 @@ const Login = () => {
             {/* Demo Account Info */}
             <div className="mt-6 p-4 bg-muted rounded-lg">
               <p className="text-sm text-muted-foreground text-center">
-                <strong>Demo Account:</strong><br />
-                Email: demo@pospro.com<br />
-                Password: demo123
+                <strong>Demo:</strong> demo@pospro.com / demo123<br />
+                <span className="mt-2 inline-block">
+                  <strong>Cashier (seeded API):</strong> cashier@gmail.com / 12345678
+                  <br />
+                  <span className="text-xs">Requires at least one branch in the database (create via onboarding or store admin).</span>
+                </span>
               </p>
             </div>
           </div>

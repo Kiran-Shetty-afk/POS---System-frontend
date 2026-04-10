@@ -4,6 +4,48 @@ All entries are dated and versioned for uniqueness.
 
 ---
 
+## brain-2026-04-10-024
+
+**Date:** 2026-04-10
+
+**Summary:** After switching accounts, browser Back could restore a **previous session’s path** (e.g. `/cashier`) while Redux reflected the **new role** (e.g. super admin). The active role’s route tree had no match for `/cashier` → 404. Each role’s `<Routes>` now includes **cross-role path redirects** to that role’s home (`/super-admin`, `/cashier`, `/store`, `/branch`, or `/auth/onboarding` when store is missing) so stale history URLs realign instead of hitting `*`.
+
+**Changed:** `src/App.jsx`
+
+---
+
+## brain-2026-04-10-023
+
+**Date:** 2026-04-10
+
+**Summary:** Browser Back/Forward (`popstate`) while logged in now clears the session when the new URL is a **public** route (landing `/`, `/auth/login`, `/auth/forgot-password`, `/auth/reset-password`, `/auth` index). In-app history (e.g. `/cashier` ↔ `/cashier/orders`) is unchanged. `/auth/onboarding` is excluded so store onboarding back navigation does not force logout. Clears JWT, user/auth/store/branch/cart Redux state and navigates to `/auth/login`.
+
+**Changed:** `src/hooks/useLogoutOnAuthHistoryBack.js`, `src/App.jsx`
+
+---
+
+## brain-2026-04-10-022
+
+**Date:** 2026-04-10
+
+**Summary:** Seeded demo cashier login **`cashier@gmail.com`** / **`12345678`** in the Spring API (`POS---System`): `DataInitializationComponent` creates the user on startup when no user with that email exists **and** at least one `Branch` row exists (assigns lowest `id` branch, links store when present). Login page demo copy updated to document credentials and the branch prerequisite.
+
+**Changed (backend repo):** `../POS---System/src/main/java/com/zosh/service/impl/DataInitializationComponent.java`
+
+**Changed (this repo):** `src/pages/common/Auth/Login.jsx`, `brain/CHANGELOG.md`
+
+---
+
+## brain-2026-04-10-021
+
+**Date:** 2026-04-10
+
+**Summary:** Cashier (and any role) post-login 404 when login JWT/profile used **`ROLE_CASHIER`** or nested profile shape while `App` only matched **`ROLE_BRANCH_CASHIER`** and top-level `role` / `branchId`. Added `normalizeAppRole` / `normalizeUserProfilePayload` (`ROLE_CASHIER` → `ROLE_BRANCH_CASHIER`, unwrap `res.data.data`, lift fields from `user`). `getUserProfile` thunk returns normalized payload; `App` and `Login` use `normalizeAppRole` for routing.
+
+**Changed:** `src/utils/userRole.js`, `src/Redux Toolkit/features/user/userThunks.js`, `src/App.jsx`, `src/pages/common/Auth/Login.jsx`
+
+---
+
 ## brain-2026-04-10-020
 
 **Date:** 2026-04-10

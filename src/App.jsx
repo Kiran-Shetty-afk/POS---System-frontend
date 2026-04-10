@@ -17,6 +17,8 @@ import {
 } from "./Redux Toolkit/features/store/storeThunks";
 import SuperAdminRoutes from "./routes/SuperAdminRoutes";
 import PageNotFound from "./pages/common/PageNotFound";
+import { normalizeAppRole } from "./utils/userRole";
+import { useLogoutOnAuthHistoryBack } from "./hooks/useLogoutOnAuthHistoryBack";
 
 const SessionRestoringScreen = () => (
   <div className="flex min-h-screen items-center justify-center bg-background">
@@ -29,6 +31,7 @@ const App = () => {
   const dispatch = useDispatch();
   const { userProfile } = useSelector((state) => state.user);
   const { store } = useSelector((state) => state.store);
+  useLogoutOnAuthHistoryBack();
   const [sessionRestored, setSessionRestored] = useState(
     () => typeof window === "undefined" || !localStorage.getItem("jwt")
   );
@@ -69,9 +72,11 @@ const App = () => {
 
   // console.log("state ", user)
 
-  if (userProfile && userProfile.role) {
+  const appRole = userProfile ? normalizeAppRole(userProfile.role) : null;
+
+  if (userProfile && appRole) {
     // User is logged in
-    if (userProfile.role === "ROLE_ADMIN") {
+    if (appRole === "ROLE_ADMIN") {
       content = (
         <Routes>
           <Route path="/" element={<Navigate to="/super-admin" replace />} />
@@ -79,6 +84,10 @@ const App = () => {
             path="/auth/*"
             element={<Navigate to="/super-admin" replace />}
           />
+          {/* Stale history from another role (e.g. cashier then login as super admin) */}
+          <Route path="/cashier/*" element={<Navigate to="/super-admin" replace />} />
+          <Route path="/store/*" element={<Navigate to="/super-admin" replace />} />
+          <Route path="/branch/*" element={<Navigate to="/super-admin" replace />} />
           <Route path="/super-admin/*" element={<SuperAdminRoutes />} />
           <Route
             path="*"
@@ -86,7 +95,7 @@ const App = () => {
           />
         </Routes>
       );
-    } else if (userProfile.role === "ROLE_BRANCH_CASHIER") {
+    } else if (appRole === "ROLE_BRANCH_CASHIER") {
       content = (
         <Routes>
           <Route path="/" element={<Navigate to="/cashier" replace />} />
@@ -94,6 +103,9 @@ const App = () => {
             path="/auth/*"
             element={<Navigate to="/cashier" replace />}
           />
+          <Route path="/super-admin/*" element={<Navigate to="/cashier" replace />} />
+          <Route path="/store/*" element={<Navigate to="/cashier" replace />} />
+          <Route path="/branch/*" element={<Navigate to="/cashier" replace />} />
           <Route path="/cashier/*" element={<CashierRoutes />} />
           <Route
             path="*"
@@ -102,8 +114,8 @@ const App = () => {
         </Routes>
       );
     } else if (
-      userProfile.role === "ROLE_STORE_ADMIN" ||
-      userProfile.role === "ROLE_STORE_MANAGER"
+      appRole === "ROLE_STORE_ADMIN" ||
+      appRole === "ROLE_STORE_MANAGER"
     ) {
       // console.log("get inside", store);
       if (!store) {
@@ -115,6 +127,10 @@ const App = () => {
               path="/auth/*"
               element={<Navigate to="/auth/onboarding" replace />}
             />
+            <Route path="/cashier/*" element={<Navigate to="/auth/onboarding" replace />} />
+            <Route path="/super-admin/*" element={<Navigate to="/auth/onboarding" replace />} />
+            <Route path="/store/*" element={<Navigate to="/auth/onboarding" replace />} />
+            <Route path="/branch/*" element={<Navigate to="/auth/onboarding" replace />} />
             <Route
               path="*"
               element={<PageNotFound/>}
@@ -131,6 +147,9 @@ const App = () => {
               path="/auth/*"
               element={<Navigate to="/store" replace />}
             />
+            <Route path="/cashier/*" element={<Navigate to="/store" replace />} />
+            <Route path="/super-admin/*" element={<Navigate to="/store" replace />} />
+            <Route path="/branch/*" element={<Navigate to="/store" replace />} />
             <Route path="/store/*" element={<StoreRoutes />} />
             <Route
               path="*"
@@ -140,8 +159,8 @@ const App = () => {
         );
       }
     } else if (
-      userProfile.role === "ROLE_BRANCH_MANAGER" ||
-      userProfile.role === "ROLE_BRANCH_ADMIN"
+      appRole === "ROLE_BRANCH_MANAGER" ||
+      appRole === "ROLE_BRANCH_ADMIN"
     ) {
       content = (
         <Routes>
@@ -150,6 +169,9 @@ const App = () => {
             path="/auth/*"
             element={<Navigate to="/branch" replace />}
           />
+          <Route path="/cashier/*" element={<Navigate to="/branch" replace />} />
+          <Route path="/super-admin/*" element={<Navigate to="/branch" replace />} />
+          <Route path="/store/*" element={<Navigate to="/branch" replace />} />
           <Route path="/branch/*" element={<BranchManagerRoutes />} />
           <Route
             path="*"

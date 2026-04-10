@@ -1,5 +1,6 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import api from '@/utils/api';
+import { normalizeUserProfilePayload } from '@/utils/userRole';
 
 // 🔹 Get user profile from JWT
 export const getUserProfile = createAsyncThunk('user/getProfile', async (token, { rejectWithValue }) => {
@@ -9,7 +10,8 @@ export const getUserProfile = createAsyncThunk('user/getProfile', async (token, 
     });
     
     console.log('Get user profile success:', res.data);
-    return res.data;
+    const raw = res.data?.data ?? res.data;
+    return normalizeUserProfilePayload(raw);
   } catch (err) {
     console.error('Get user profile error:', err);
     return rejectWithValue(err.response?.data?.message || 'Failed to fetch profile');
