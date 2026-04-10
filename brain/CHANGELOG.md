@@ -4,6 +4,16 @@ All entries are dated and versioned for uniqueness.
 
 ---
 
+## brain-2026-04-10-012
+
+**Date:** 2026-04-10
+
+**Summary:** Cashier sidebar visible on all nested routes: from `md` breakpoint the nav is fixed and always shown with `md:ml-64` on main content; below `md`, a layout-level menu bar opens the drawer (only POS had a menu before). Overlay and sidebar close control are mobile-only. `POSHeader` no longer duplicates the menu button; keyboard shortcuts badge tucks on small screens.
+
+**Changed:** `src/pages/cashier/CashierDashboardLayout.jsx`, `src/pages/cashier/components/POSHeader.jsx`, `src/pages/cashier/Sidebar/CashierSideBar.jsx`
+
+---
+
 ## brain-2026-04-10-011
 
 **Date:** 2026-04-10

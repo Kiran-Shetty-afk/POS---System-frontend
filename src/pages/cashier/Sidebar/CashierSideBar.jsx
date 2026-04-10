@@ -36,7 +36,7 @@ const CashierSideBar = ({ navItems, onClose }) => {
   return (
     <div className="w-64 border-r border-border bg-sidebar p-4 flex flex-col h-full relative">
       <Button
-        className="absolute top-2 right-2 rounded"
+        className="absolute top-2 right-2 rounded md:hidden"
         onClick={onClose}
         aria-label="Close sidebar"
       >
