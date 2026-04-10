@@ -4,17 +4,9 @@ import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@
 import { Tag } from "lucide-react";
 import { Package } from "lucide-react";
 import { formatDateTime } from "../../../utils/formateDate";
-import { useDispatch } from "react-redux";
-import { useEffect } from "react";
-
 const InactiveCashierTable = () => {
   const {storeAlerts} = useSelector((state) => state.storeAnalytics);
 
-  const dispatch=useDispatch()
-
-  // useEffect(()=>{
-  //   dispatch()
-  // },[])
   return (
     <>
       <Table >

@@ -1,13 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useCallback, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
-import { Select } from "@/components/ui/select";
-import { Input } from "@/components/ui/input";
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
 import { ChartContainer, ChartTooltip, ChartTooltipContent, ChartLegend, ChartLegendContent } from "@/components/ui/chart";
-import { FileText, Download, Filter, Calendar, RefreshCw } from "lucide-react";
 import { 
   getMonthlySales, 
   getSalesByCategory 
@@ -16,66 +11,14 @@ import { useToast } from "@/components/ui/use-toast";
 
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#8884D8"];
 
-// Mock data for reports table
-const reportData = [
-  {
-    id: 1,
-    name: "Monthly Sales Report",
-    type: "Sales",
-    period: "July 2023",
-    generatedOn: "2023-08-01",
-    status: "Completed",
-  },
-  {
-    id: 2,
-    name: "Inventory Status Report",
-    type: "Inventory",
-    period: "Q2 2023",
-    generatedOn: "2023-07-15",
-    status: "Completed",
-  },
-  {
-    id: 3,
-    name: "Employee Performance",
-    type: "HR",
-    period: "June 2023",
-    generatedOn: "2023-07-10",
-    status: "Completed",
-  },
-  {
-    id: 4,
-    name: "Top Selling Products",
-    type: "Products",
-    period: "Q2 2023",
-    generatedOn: "2023-07-05",
-    status: "Completed",
-  },
-  {
-    id: 5,
-    name: "Customer Demographics",
-    type: "Customers",
-    period: "H1 2023",
-    generatedOn: "2023-07-01",
-    status: "Completed",
-  },
-];
-
 export default function Reports() {
   const dispatch = useDispatch();
   const { toast } = useToast();
   const { userProfile } = useSelector((state) => state.user);
   const { monthlySales, salesByCategory, loading } = useSelector((state) => state.storeAnalytics);
   
-  const [reportType, setReportType] = useState("all");
-  const [dateRange, setDateRange] = useState("last30");
-  
-  useEffect(() => {
-    if (userProfile?.id) {
-      fetchReportsData();
-    }
-  }, [userProfile]);
-
-  const fetchReportsData = async () => {
+  const fetchReportsData = useCallback(async () => {
+    if (!userProfile?.id) return;
     try {
       await Promise.all([
         dispatch(getMonthlySales(userProfile.id)).unwrap(),
@@ -88,7 +31,13 @@ export default function Reports() {
         variant: "destructive",
       });
     }
-  };
+  }, [dispatch, toast, userProfile]);
+
+  useEffect(() => {
+    if (userProfile?.id) {
+      fetchReportsData();
+    }
+  }, [userProfile, fetchReportsData]);
 
   // Format currency
   const formatCurrency = (amount) => {
@@ -110,11 +59,6 @@ export default function Reports() {
     name: item.categoryName,
     value: item.totalSales
   })) || [];
-
-  // Filter reports based on type
-  const filteredReports = reportType === "all" 
-    ? reportData 
-    : reportData.filter(report => report.type.toLowerCase() === reportType.toLowerCase());
 
   const salesConfig = {
     sales: {

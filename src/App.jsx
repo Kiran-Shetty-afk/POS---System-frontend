@@ -42,6 +42,10 @@ const App = () => {
       content = (
         <Routes>
           <Route path="/" element={<Navigate to="/super-admin" replace />} />
+          <Route
+            path="/auth/*"
+            element={<Navigate to="/super-admin" replace />}
+          />
           <Route path="/super-admin/*" element={<SuperAdminRoutes />} />
           <Route
             path="*"
@@ -53,6 +57,10 @@ const App = () => {
       content = (
         <Routes>
           <Route path="/" element={<Navigate to="/cashier" replace />} />
+          <Route
+            path="/auth/*"
+            element={<Navigate to="/cashier" replace />}
+          />
           <Route path="/cashier/*" element={<CashierRoutes />} />
           <Route
             path="*"
@@ -71,6 +79,10 @@ const App = () => {
           <Routes>
             <Route path="/auth/onboarding" element={<Onboarding />} />
             <Route
+              path="/auth/*"
+              element={<Navigate to="/auth/onboarding" replace />}
+            />
+            <Route
               path="*"
               element={<PageNotFound/>}
             />
@@ -82,6 +94,10 @@ const App = () => {
         content = (
           <Routes>
             <Route path="/" element={<Navigate to="/store" replace />} />
+            <Route
+              path="/auth/*"
+              element={<Navigate to="/store" replace />}
+            />
             <Route path="/store/*" element={<StoreRoutes />} />
             <Route
               path="*"
@@ -97,6 +113,10 @@ const App = () => {
       content = (
         <Routes>
           <Route path="/" element={<Navigate to="/branch" replace />} />
+          <Route
+            path="/auth/*"
+            element={<Navigate to="/branch" replace />}
+          />
           <Route path="/branch/*" element={<BranchManagerRoutes />} />
           <Route
             path="*"

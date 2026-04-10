@@ -12,7 +12,7 @@ export default function StoreDashboard({ children }) {
     if (localStorage.getItem("jwt")) {
       dispatch(getStoreByAdmin(localStorage.getItem("jwt")));
     }
-  }, []);
+  }, [dispatch]);
 
   return (
     <div className="flex h-screen bg-gradient-to-br from-primary/5 via-background to-primary/10">

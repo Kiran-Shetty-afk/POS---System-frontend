@@ -70,6 +70,8 @@ const EmployeeForm = ({ initialData, onSubmit, roles }) => {
     } else {
       formik.resetForm();
     }
+    // formik instance updates each render; we only react to initialData
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initialData]);
 
   return (

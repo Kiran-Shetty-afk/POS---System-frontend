@@ -28,113 +28,12 @@ import { clearCustomerOrders } from "../../../Redux Toolkit/features/order/order
 import { getOrdersByCustomer } from "../../../Redux Toolkit/features/order/orderThunks";
 
 const Customers = () => {
-  // Sample data - in a real app, this would come from an API
-  const initialCustomers = [
-    {
-      id: 1,
-      name: "Rahul Mehta",
-      phone: "+91 9876543200",
-      email: "rahul.mehta@example.com",
-      totalOrders: 12,
-      totalSpent: "₹8,450",
-      lastOrder: "2023-08-10",
-      loyaltyStatus: "Gold",
-    },
-    {
-      id: 2,
-      name: "Sneha Gupta",
-      phone: "+91 9876543201",
-      email: "sneha.gupta@example.com",
-      totalOrders: 8,
-      totalSpent: "₹5,200",
-      lastOrder: "2023-08-05",
-      loyaltyStatus: "Silver",
-    },
-    {
-      id: 3,
-      name: "Arjun Sharma",
-      phone: "+91 9876543202",
-      email: "arjun.sharma@example.com",
-      totalOrders: 5,
-      totalSpent: "₹3,100",
-      lastOrder: "2023-07-28",
-      loyaltyStatus: "Bronze",
-    },
-    {
-      id: 4,
-      name: "Meera Patel",
-      phone: "+91 9876543203",
-      email: "meera.patel@example.com",
-      totalOrders: 15,
-      totalSpent: "₹12,750",
-      lastOrder: "2023-08-12",
-      loyaltyStatus: "Gold",
-    },
-    {
-      id: 5,
-      name: "Vikrant Singh",
-      phone: "+91 9876543204",
-      email: "vikrant.singh@example.com",
-      totalOrders: 3,
-      totalSpent: "₹1,850",
-      lastOrder: "2023-07-15",
-      loyaltyStatus: "Bronze",
-    },
-    {
-      id: 6,
-      name: "Priya Desai",
-      phone: "+91 9876543205",
-      email: "priya.desai@example.com",
-      totalOrders: 7,
-      totalSpent: "₹4,900",
-      lastOrder: "2023-08-01",
-      loyaltyStatus: "Silver",
-    },
-  ];
-
-  // Sample order history data
-  const sampleOrderHistory = [
-    {
-      id: "ORD-7891",
-      date: "2023-08-10",
-      amount: "₹1,250",
-      items: 5,
-      status: "Completed",
-      paymentMode: "UPI",
-    },
-    {
-      id: "ORD-7650",
-      date: "2023-07-25",
-      amount: "₹850",
-      items: 3,
-      status: "Completed",
-      paymentMode: "Cash",
-    },
-    {
-      id: "ORD-7432",
-      date: "2023-07-12",
-      amount: "₹1,500",
-      items: 6,
-      status: "Completed",
-      paymentMode: "Card",
-    },
-    {
-      id: "ORD-7290",
-      date: "2023-06-30",
-      amount: "₹720",
-      items: 2,
-      status: "Completed",
-      paymentMode: "UPI",
-    },
-  ];
-
   const { customerOrders } = useSelector((state) => state.order);
 
   const { customers } = useSelector((state) => state.customer);
   const [searchTerm, setSearchTerm] = useState("");
   const [isCustomerDetailsOpen, setIsCustomerDetailsOpen] = useState(false);
   const [selectedCustomer, setSelectedCustomer] = useState(null);
-  const [orderHistory, setOrderHistory] = useState(sampleOrderHistory);
   const dispatch = useDispatch();
 
   // Filter customers based on search term
@@ -145,19 +44,6 @@ const Customers = () => {
       customer?.email?.toLowerCase().includes(searchTerm.toLowerCase())
     );
   });
-
-  const getLoyaltyStatusColor = (status) => {
-    switch (status?.toLowerCase()) {
-      case "gold":
-        return "bg-yellow-100 text-yellow-800 hover:bg-yellow-100/80";
-      case "silver":
-        return "bg-gray-100 text-gray-800 hover:bg-gray-100/80";
-      case "bronze":
-        return "bg-amber-100 text-amber-800 hover:bg-amber-100/80";
-      default:
-        return "bg-primary/10 text-primary hover:bg-primary/20";
-    }
-  };
 
   useEffect(() => {
     dispatch(getAllCustomers());

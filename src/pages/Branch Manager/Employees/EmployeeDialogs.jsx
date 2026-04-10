@@ -11,7 +11,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { EmployeeForm } from "../../store/Employee";
 import { Plus } from "lucide-react";
-import { branchAdminRole } from "../../../utils/userRole";
 
 export const AddEmployeeDialog = ({
   isAddDialogOpen,

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -28,13 +28,8 @@ export default function Sales() {
   } = useSelector((state) => state.storeAnalytics);
 
 
-  useEffect(() => {
-    if (userProfile?.id) {
-      fetchSalesData();
-    }
-  }, [userProfile]);
-
-  const fetchSalesData = async () => {
+  const fetchSalesData = useCallback(async () => {
+    if (!userProfile?.id) return;
     try {
       await Promise.all([
         dispatch(getStoreOverview(userProfile.id)).unwrap(),
@@ -48,7 +43,13 @@ export default function Sales() {
         variant: "destructive",
       });
     }
-  };
+  }, [dispatch, toast, userProfile]);
+
+  useEffect(() => {
+    if (userProfile?.id) {
+      fetchSalesData();
+    }
+  }, [userProfile, fetchSalesData]);
 
   // Format currency
   const formatCurrency = (amount) => {

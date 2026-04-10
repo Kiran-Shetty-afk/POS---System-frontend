@@ -12,10 +12,7 @@ import { Edit } from "lucide-react";
 import { useDispatch } from "react-redux";
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
-import {
-  getAllRefunds,
-  getRefundsByBranch,
-} from "../../../Redux Toolkit/features/refund/refundThunks";
+import { getRefundsByBranch } from "../../../Redux Toolkit/features/refund/refundThunks";
 
 
 const Refunds = () => {
@@ -25,7 +22,7 @@ const Refunds = () => {
 
   useEffect(() => {
     if (branch) dispatch(getRefundsByBranch(branch?.id));
-  }, [branch]);
+  }, [branch, dispatch]);
 
   console.log("refund s", refunds)
   return (

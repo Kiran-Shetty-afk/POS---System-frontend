@@ -1,7 +1,7 @@
 import React from "react";
 import { Store, Bell, Shield, CreditCard, Database, HelpCircle } from "lucide-react";
 
-const SettingsNavigation = ({ activeSection }) => {
+const SettingsNavigation = ({ activeSection, onNavigate }) => {
   const navItems = [
     {
       id: "store-settings",
@@ -51,6 +51,10 @@ const SettingsNavigation = ({ activeSection }) => {
           <a
             key={item.id}
             href={item.href}
+            onClick={(e) => {
+              e.preventDefault();
+              onNavigate?.(item.id);
+            }}
             className={`flex items-center px-3 py-2 text-sm font-medium rounded-md ${
               isActive
                 ? "bg-emerald-100 text-emerald-700"

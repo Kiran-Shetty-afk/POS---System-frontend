@@ -21,7 +21,7 @@ import {
 } from "./validation";
 import { transformSettingsToApiFormat } from "./formUtils";
 
-const StoreSettingsForm = ({ initialValues, onSubmit, isSubmitting, storeId }) => {
+const StoreSettingsForm = ({ initialValues, onSubmit, isSubmitting }) => {
   const handleSubmit = async (values, { setSubmitting, resetForm }) => {
     try {
       // Transform settings data to API format

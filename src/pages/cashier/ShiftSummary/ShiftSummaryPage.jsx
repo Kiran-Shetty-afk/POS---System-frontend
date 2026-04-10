@@ -39,16 +39,13 @@ const ShiftSummaryPage = () => {
 
   const handleEndShift = async () => {
     setShowLogoutConfirmDialog(false);
-    if (true) {
-       dispatch(endShift());
-       dispatch(logout())
-       navigate("/")
-      toast({
-        title: 'Shift Ended',
-        description: 'You have been logged out successfully',
-      });
-      
-    }
+    dispatch(endShift());
+    dispatch(logout());
+    navigate("/");
+    toast({
+      title: 'Shift Ended',
+      description: 'You have been logged out successfully',
+    });
   };
 
   return (

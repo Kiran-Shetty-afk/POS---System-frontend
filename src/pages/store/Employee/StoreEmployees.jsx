@@ -23,17 +23,18 @@ export default function StoreEmployees() {
   const dispatch = useDispatch();
   const { employees } = useSelector((state) => state.employee);
   const {store}=useSelector(state=>state.store)
+  const jwt = typeof localStorage !== "undefined" ? localStorage.getItem("jwt") : null;
 
   useEffect(() => {
     if (store?.id) {
       dispatch(
         findStoreEmployees({
           storeId: store?.id,
-          token: localStorage.getItem("jwt"),
+          token: jwt,
         })
       );
     }
-  }, [dispatch, store?.id, localStorage.getItem("jwt")]);
+  }, [dispatch, store?.id, jwt]);
 
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);

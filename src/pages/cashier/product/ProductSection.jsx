@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -28,8 +28,7 @@ const ProductSection = ({searchInputRef}) => {
   } = useSelector((state) => state.product);
 
   const { toast } = useToast();
-
-   
+  const searchDebounceRef = useRef(null);
 
   const getDisplayProducts = () => {
     if (searchTerm.trim() && searchResults.length > 0) {
@@ -86,33 +85,29 @@ const ProductSection = ({searchInputRef}) => {
     fetchProducts();
   }, [dispatch, branch, userProfile, toast]);
 
-  // Debounced search function
   const debouncedSearch = useCallback(
-    (() => {
-      let timeoutId;
-      return (query) => {
-        clearTimeout(timeoutId);
-        timeoutId = setTimeout(() => {
-          if (query.trim() && branch?.storeId && localStorage.getItem("jwt")) {
-            dispatch(
-              searchProducts({
-                query: query.trim(),
-                storeId: branch.storeId,
-              })
-            )
-              .unwrap()
-              .catch((error) => {
-                console.error("Search failed:", error);
-                toast({
-                  title: "Search Error",
-                  description: error || "Failed to search products",
-                  variant: "destructive",
-                });
+    (query) => {
+      clearTimeout(searchDebounceRef.current);
+      searchDebounceRef.current = setTimeout(() => {
+        if (query.trim() && branch?.storeId && localStorage.getItem("jwt")) {
+          dispatch(
+            searchProducts({
+              query: query.trim(),
+              storeId: branch.storeId,
+            })
+          )
+            .unwrap()
+            .catch((error) => {
+              console.error("Search failed:", error);
+              toast({
+                title: "Search Error",
+                description: error || "Failed to search products",
+                variant: "destructive",
               });
-          }
-        }, 500); // 300ms debounce
-      };
-    })(),
+            });
+        }
+      }, 500);
+    },
     [dispatch, branch, toast]
   );
 

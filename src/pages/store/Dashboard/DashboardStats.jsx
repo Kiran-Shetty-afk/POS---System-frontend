@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Card, CardContent } from "@/components/ui/card";
 import { DollarSign, Store, ShoppingCart, Users } from "lucide-react";
@@ -11,13 +11,8 @@ const DashboardStats = () => {
   const { storeOverview, loading } = useSelector((state) => state.storeAnalytics);
   const { userProfile } = useSelector((state) => state.user);
 
-  useEffect(() => {
-    if (userProfile?.id) {
-      fetchStoreOverview();
-    }
-  }, [userProfile]);
-
-  const fetchStoreOverview = async () => {
+  const fetchStoreOverview = useCallback(async () => {
+    if (!userProfile?.id) return;
     try {
       await dispatch(getStoreOverview(userProfile.id)).unwrap();
     } catch (err) {
@@ -27,7 +22,13 @@ const DashboardStats = () => {
         variant: "destructive",
       });
     }
-  };
+  }, [dispatch, toast, userProfile]);
+
+  useEffect(() => {
+    if (userProfile?.id) {
+      fetchStoreOverview();
+    }
+  }, [userProfile, fetchStoreOverview]);
 
   // Format currency
   const formatCurrency = (amount) => {

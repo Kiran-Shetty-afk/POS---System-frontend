@@ -23,7 +23,21 @@ export default defineConfig([
       },
     },
     rules: {
-      'no-unused-vars': ['error', { varsIgnorePattern: '^[A-Z_]' }],
+      'no-unused-vars': [
+      'error',
+      {
+        varsIgnorePattern: '^[A-Z_]',
+        argsIgnorePattern: '^_',
+        caughtErrorsIgnorePattern: '^_',
+      },
+    ],
+    },
+  },
+  {
+    files: ['src/components/ui/**/*.{js,jsx}'],
+    rules: {
+      // shadcn/ui primitives export helpers (variants, hooks) alongside components
+      'react-refresh/only-export-components': 'off',
     },
   },
 ])

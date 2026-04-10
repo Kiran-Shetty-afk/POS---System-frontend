@@ -17,8 +17,10 @@ const Alerts = () => {
       console.log("Store Alerts:", storeAnalytics.storeAlerts, user);
     
       useEffect(() => {
-        dispatch(getStoreAlerts(user.id));
-      }, []);
+        if (user?.id) {
+          dispatch(getStoreAlerts(user.id));
+        }
+      }, [dispatch, user?.id]);
   return (
     <div className='grid grid-cols-4 gap-4 p-4'>
         <div className='col-span-2 '>

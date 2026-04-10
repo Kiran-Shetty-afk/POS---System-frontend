@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useCallback, useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { toast } from "@/components/ui/use-toast";
@@ -15,25 +15,12 @@ import {
 export default function Stores() {
   const dispatch = useDispatch();
   const { store, loading, error } = useSelector((state) => state.store);
-  const { user } = useSelector((state) => state.user);
 
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [storeData, setStoreData] = useState(null);
   const [refreshing, setRefreshing] = useState(false);
 
-  useEffect(() => {
-    if (store?.id) {
-      fetchStoreData();
-    }
-  }, [dispatch, user]);
-  
-  useEffect(() => {
-    if (store) {
-      setStoreData(store);
-    }
-  }, [store]);
-  
-  const fetchStoreData = async () => {
+  const fetchStoreData = useCallback(async () => {
     setRefreshing(true);
     try {
       await dispatch(getStoreByAdmin()).unwrap();
@@ -46,7 +33,19 @@ export default function Stores() {
     } finally {
       setRefreshing(false);
     }
-  };
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (store?.id) {
+      fetchStoreData();
+    }
+  }, [store?.id, fetchStoreData]);
+
+  useEffect(() => {
+    if (store) {
+      setStoreData(store);
+    }
+  }, [store]);
 
   const handleEditStore = async (values, { setSubmitting, resetForm }) => {
     try {

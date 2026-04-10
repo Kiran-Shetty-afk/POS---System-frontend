@@ -9,7 +9,7 @@ import { getInitialValues } from "./formUtils";
 
 const StoreSettings = ({ settings, onChange }) => {
   const dispatch = useDispatch();
-  const { store, loading, error } = useSelector((state) => state.store);
+  const { store, loading } = useSelector((state) => state.store);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleFormSubmit = async (apiData, { setSubmitting, resetForm }) => {

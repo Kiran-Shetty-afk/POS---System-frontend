@@ -16,7 +16,6 @@ import HeroSection from "./HeroSection";
 import TrustedLogos from "./TrustedLogos";
 import PricingCalculator from "./PricingCalculator";
 // import FeatureComparisonSection from './FeatureComparison'
-import MobileAppShowcase from "./MobileAppShowcase";
 import TestimonialCarousel from "./TestimonialCarousel";
 import LiveDemoSection from "./LiveDemoSection";
 import FAQSection from "./FAQSection";
@@ -59,9 +58,6 @@ function Landing() {
 
       {/* Feature Comparison Section */}
       <FeatureComparisonSection />
-
-      {/* Mobile App Showcase */}
-      <MobileAppShowcase />
 
       {/* FAQ Section */}
       <FAQSection />

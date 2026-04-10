@@ -98,7 +98,7 @@ export default function ExportsPage() {
     }, 2000);
   };
 
-  const handleDownload = (exportId) => {
+  const handleDownload = (_exportId) => {
     toast({
       title: "Download Started",
       description: "Your file download has begun.",

@@ -4,7 +4,6 @@ import { Button } from '../../../components/ui/button';
 import { CheckCircle, Store, Users, ShoppingCart, Info, Star } from 'lucide-react';
 import { getAllSubscriptionPlans } from '../../../Redux Toolkit/features/subscriptionPlan/subscriptionPlanThunks';
 import { subscribeToPlan, upgradeSubscription, getStoreSubscriptions } from '../../../Redux Toolkit/features/subscription/subscriptionThunks';
-import { createOrder } from '../../../Redux Toolkit/features/order/orderThunks';
 import { createPaymentLinkThunk } from '../../../Redux Toolkit/features/payment/paymentThunks';
 
 const Upgrade = () => {

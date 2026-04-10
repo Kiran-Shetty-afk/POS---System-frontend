@@ -48,7 +48,7 @@ export default function StoreTable({ onViewDetails, onBlockStore, onActivateStor
     try {
       await dispatch(moderateStore({ storeId, action: newStatus })).unwrap();
       // Optionally, you can show a toast here for success
-    } catch (e) {
+    } catch {
       // Optionally, you can show a toast here for error
     } finally {
       setUpdatingId(null);

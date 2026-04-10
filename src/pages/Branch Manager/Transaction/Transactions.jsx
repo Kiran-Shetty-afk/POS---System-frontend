@@ -41,7 +41,7 @@ export default function Transactions() {
     if (branch) {
       dispatch(getOrdersByBranch({branchId:branch?.id}));
     }
-  }, [branch]);
+  }, [branch, dispatch]);
 
   // Calculate totals
   const totalIncome = orders

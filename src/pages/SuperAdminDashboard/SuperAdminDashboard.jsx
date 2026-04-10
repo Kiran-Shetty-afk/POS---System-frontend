@@ -1,19 +1,8 @@
 import { Outlet } from "react-router";
-import { useDispatch } from "react-redux";
-import { useEffect } from "react";
 import SuperAdminSidebar from "./components/SuperAdminSidebar";
 import SuperAdminTopbar from "./components/SuperAdminTopbar";
 
 export default function SuperAdminDashboard({ children }) {
-  const dispatch = useDispatch();
-  
-  useEffect(() => {
-    // Initialize SuperAdmin data if needed
-    if (localStorage.getItem("jwt")) {
-      // Dispatch any initial SuperAdmin data fetching
-    }
-  }, []);
-
   return (
     <div className="flex h-screen bg-gradient-to-br from-primary/5 via-background to-primary/10">
       <SuperAdminSidebar />

@@ -19,7 +19,7 @@ const validationSchema = Yup.object({
     .required('Confirm password is required'),
 });
 
-const OwnerDetailsForm = ({ initialValues, onSubmit, onBack }) => {
+const OwnerDetailsForm = ({ initialValues, onSubmit, onBack: _onBack }) => {
   return (
     <Formik
       initialValues={initialValues}

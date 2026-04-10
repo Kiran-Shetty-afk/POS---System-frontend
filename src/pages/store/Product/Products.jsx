@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useCallback, useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -32,23 +32,9 @@ export default function Products() {
   const [isSearchActive, setIsSearchActive] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
 
-  // Fetch products on mount or when store changes
-  useEffect(() => {
-    if (store?.id) {
-      fetchProducts();
-    }
-  }, [dispatch, store]);
-
-  // Update displayed products when products or search results change
-  useEffect(() => {
-    setDisplayedProducts(
-      isSearchActive && searchResults.length > 0 ? searchResults : products
-    );
-  }, [products, searchResults, isSearchActive]);
-
-  const fetchProducts = async () => {
+  const fetchProducts = useCallback(async () => {
+    if (!store?.id) return;
     try {
-      // const token = localStorage.getItem("jwt");
       await dispatch(getProductsByStore(store.id)).unwrap();
     } catch (err) {
       toast({
@@ -57,7 +43,20 @@ export default function Products() {
         variant: "destructive",
       });
     }
-  };
+  }, [dispatch, store?.id]);
+
+  useEffect(() => {
+    if (store?.id) {
+      fetchProducts();
+    }
+  }, [store?.id, fetchProducts]);
+
+  // Update displayed products when products or search results change
+  useEffect(() => {
+    setDisplayedProducts(
+      isSearchActive && searchResults.length > 0 ? searchResults : products
+    );
+  }, [products, searchResults, isSearchActive]);
 
   const handleRefresh = async () => {
     setRefreshing(true);

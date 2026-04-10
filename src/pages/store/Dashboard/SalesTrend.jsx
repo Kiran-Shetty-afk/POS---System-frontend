@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { TrendingUp, Calendar } from "lucide-react";
@@ -32,13 +32,8 @@ const SalesTrend = () => {
   const { userProfile } = useSelector((state) => state.user);
   const [period, setPeriod] = useState("daily");
 
-  useEffect(() => {
-    if (userProfile?.id) {
-      fetchSalesData();
-    }
-  }, [userProfile, period]);
-
-  const fetchSalesData = async () => {
+  const fetchSalesData = useCallback(async () => {
+    if (!userProfile?.id) return;
     try {
       if (period === "daily") {
         await dispatch(getDailySales(userProfile.id)).unwrap();
@@ -54,7 +49,13 @@ const SalesTrend = () => {
         variant: "destructive",
       });
     }
-  };
+  }, [dispatch, period, toast, userProfile]);
+
+  useEffect(() => {
+    if (userProfile?.id) {
+      fetchSalesData();
+    }
+  }, [userProfile, fetchSalesData]);
 
   // Format currency for tooltip
   const formatCurrency = (value) => {
