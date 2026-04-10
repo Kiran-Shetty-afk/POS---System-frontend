@@ -4,6 +4,26 @@ All entries are dated and versioned for uniqueness.
 
 ---
 
+## brain-2026-04-10-019
+
+**Date:** 2026-04-10
+
+**Summary:** Vite dev proxy for `/auth` forwarded **browser GET** requests (e.g. Back/refresh on `/auth/login`) to Spring, which only allows POST on `/auth/login`, returning JSON `Request method 'GET' is not supported`. The `/auth` proxy now uses a `bypass` so GET requests serve the SPA `index.html`; POST (and other API verbs) still proxy to `:5000`.
+
+**Changed:** `vite.config.js`
+
+---
+
+## brain-2026-04-10-018
+
+**Date:** 2026-04-10
+
+**Summary:** Fixed Super Admin (and all roles) seeing `PageNotFound` (404) after login and when using the browser Back button toward that broken state. Root cause: `navigate()` ran before `getUserProfile` finished, so `App` still had `userProfile === null` and rendered the logged-out route tree where `/super-admin` only matched the `*` catch-all. Login now `await`s `dispatch(getUserProfile(jwt)).unwrap()` before any role-based `navigate(..., { replace: true })`.
+
+**Changed:** `src/pages/common/Auth/Login.jsx`
+
+---
+
 ## brain-2026-04-10-017
 
 **Date:** 2026-04-10

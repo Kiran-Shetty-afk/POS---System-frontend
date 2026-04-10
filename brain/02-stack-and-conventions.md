@@ -4,7 +4,7 @@
 
 | Layer | Choice |
 |--------|--------|
-| Bundler / dev server | Vite 7 (dev proxy to backend on `:5000` for `/api`, `/auth`, `/onboarding`, `/users`; proxy strips `Origin` so strict CORS on the API does not return 403; `src/utils/api.js` uses relative base URL in dev) |
+| Bundler / dev server | Vite 7 (dev proxy to backend on `:5000` for `/api`, `/auth`, `/onboarding`, `/users`; proxy strips `Origin` so strict CORS on the API does not return 403; `src/utils/api.js` uses relative base URL in dev). For `/auth`, GET is bypassed to `index.html` so SPA routes like `/auth/login` are not proxied to Spring (only POST `/auth/*` hits the API). |
 | UI library | React 19 |
 | Routing | React Router 7 |
 | Styling | Tailwind CSS 4 (`@tailwindcss/vite`) |

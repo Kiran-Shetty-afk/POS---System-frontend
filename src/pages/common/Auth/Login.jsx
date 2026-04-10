@@ -51,31 +51,49 @@ const Login = () => {
     try {
       const resultAction = await dispatch(login(formData))
       if (login.fulfilled.match(resultAction)) {
+        const jwt = resultAction.payload.jwt
+        const user = resultAction.payload.user
+
+        try {
+          await dispatch(getUserProfile(jwt)).unwrap()
+        } catch (profileErr) {
+          toast({
+            title: "Error",
+            description:
+              typeof profileErr === "string"
+                ? profileErr
+                : "Could not load your profile. Please try again.",
+            variant: "destructive",
+          })
+          return
+        }
+
         toast({
           title: "Success",
           description: "Login successful!",
         })
 
-        const user=resultAction.payload.user;
+        console.log("Login success:", user.role)
 
-        console.log('Login success:', resultAction.payload.user.role)
-        dispatch(getUserProfile(resultAction.payload.jwt)); 
-        
-        
         // Redirect based on user role (replace so browser Back does not return to login/auth)
         const userRole = user.role
-        if (userRole === 'ROLE_BRANCH_CASHIER') {
-          navigate('/cashier', { replace: true })
+        if (userRole === "ROLE_BRANCH_CASHIER") {
+          navigate("/cashier", { replace: true })
           dispatch(startShift(user.branchId))
-        
-        } else if (userRole === 'ROLE_STORE_ADMIN' || userRole === 'ROLE_STORE_MANAGER') {
-          navigate('/store', { replace: true })
-        } else if (userRole === 'ROLE_BRANCH_MANAGER' || userRole === 'ROLE_BRANCH_ADMIN') {
-          navigate('/branch', { replace: true })
-        } else if (userRole === 'ROLE_ADMIN') {
-          navigate('/super-admin', { replace: true })
+        } else if (
+          userRole === "ROLE_STORE_ADMIN" ||
+          userRole === "ROLE_STORE_MANAGER"
+        ) {
+          navigate("/store", { replace: true })
+        } else if (
+          userRole === "ROLE_BRANCH_MANAGER" ||
+          userRole === "ROLE_BRANCH_ADMIN"
+        ) {
+          navigate("/branch", { replace: true })
+        } else if (userRole === "ROLE_ADMIN") {
+          navigate("/super-admin", { replace: true })
         } else {
-          navigate('/', { replace: true })
+          navigate("/", { replace: true })
         }
       } else {
         toast({

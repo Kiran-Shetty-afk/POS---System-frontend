@@ -17,13 +17,27 @@ const devApiProxy = {
   },
 };
 
+/**
+ * Same-origin SPA routes live under `/auth/*` (e.g. `/auth/login`). The API also uses POST `/auth/login`.
+ * A browser GET (refresh, Back) must serve the Vite app, not proxy to Spring — otherwise Spring returns
+ * "Request method 'GET' is not supported" for page navigations.
+ */
+const devAuthApiProxy = {
+  ...devApiProxy,
+  bypass(req) {
+    if (req.method === "GET") {
+      return "/index.html";
+    }
+  },
+};
+
 export default defineConfig({
   plugins: [react(), tailwindcss()],
   server: {
     proxy: {
       // Dev-only: same-origin API calls avoid browser CORS; backend runs on :5000
       "/api": devApiProxy,
-      "/auth": devApiProxy,
+      "/auth": devAuthApiProxy,
       "/onboarding": devApiProxy,
       "/users": devApiProxy,
     },
