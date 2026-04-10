@@ -4,6 +4,16 @@ All entries are dated and versioned for uniqueness.
 
 ---
 
+## brain-2026-04-10-031
+
+**Date:** 2026-04-10
+
+**Summary:** Removed **Request Demo** buttons from the marketing **Header** (desktop and mobile).
+
+**Changed:** `src/pages/common/Landing/Header.jsx`, `brain/CHANGELOG.md`
+
+---
+
 ## brain-2026-04-10-030
 
 **Date:** 2026-04-10
