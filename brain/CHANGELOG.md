@@ -4,6 +4,16 @@ All entries are dated and versioned for uniqueness.
 
 ---
 
+## brain-2026-04-10-017
+
+**Date:** 2026-04-10
+
+**Summary:** Reset remote `main` to `59f64c7` (`feat(exports): wire CSV downloads…`) via `git reset --hard` and `git push --force-with-lease`. Removed two commits that were causing problems: `f89a81d` (auth back-navigation / paint fix) and `9817158` (cashier shift summary PDF and routing session fixes). Anyone who had already pulled those commits should reset or rebase to match `origin/main`.
+
+**Changed:** Git history only (no file edits in this step).
+
+---
+
 ## brain-2026-04-10-016
 
 **Date:** 2026-04-10
