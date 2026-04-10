@@ -4,6 +4,16 @@ All entries are dated and versioned for uniqueness.
 
 ---
 
+## brain-2026-04-10-011
+
+**Date:** 2026-04-10
+
+**Summary:** Cashier sidebar `navItems` order documented explicitly: POS Terminal, then Order History, Returns/Refunds, Customers, Shift Summary. `CashierSideBar` active link now uses React Router `useLocation().pathname` instead of the global `location` object.
+
+**Changed:** `src/pages/cashier/CashierDashboardLayout.jsx`, `src/pages/cashier/Sidebar/CashierSideBar.jsx`
+
+---
+
 ## brain-2026-04-10-010
 
 **Date:** 2026-04-10

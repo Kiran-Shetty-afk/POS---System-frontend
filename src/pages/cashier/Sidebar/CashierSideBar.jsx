@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router";
+import { Link, useNavigate, useLocation } from "react-router";
 import { useSelector, useDispatch } from "react-redux";
 import { useEffect } from "react";
 import { getBranchById } from "../../../Redux Toolkit/features/branch/branchThunks";
@@ -11,9 +11,10 @@ import BranchInfo from "./BranchInfo";
 
 const CashierSideBar = ({ navItems, onClose }) => {
   const dispatch = useDispatch();
+  const { pathname } = useLocation();
   const { userProfile } = useSelector((state) => state.user);
   const { branch } = useSelector((state) => state.branch);
-  const navigate=useNavigate();
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (userProfile && userProfile.branchId) {
@@ -63,7 +64,7 @@ const CashierSideBar = ({ navItems, onClose }) => {
             key={item.path}
             to={item.path}
             className={`flex items-center justify-between p-3 rounded-md hover:bg-sidebar-accent transition-colors ${
-              location.pathname === item.path
+              pathname === item.path
                 ? "bg-sidebar-accent text-sidebar-accent-foreground"
                 : "text-sidebar-foreground"
             }`}

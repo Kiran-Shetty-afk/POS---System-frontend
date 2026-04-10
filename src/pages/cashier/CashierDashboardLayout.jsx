@@ -2,7 +2,6 @@ import { Outlet, useNavigate } from "react-router";
 
 import { useToast } from "@/components/ui/use-toast";
 import {
- 
   ShoppingCartIcon,
   ClockIcon,
   RotateCcwIcon,
@@ -13,6 +12,7 @@ import CashierSideBar from "./Sidebar/CashierSideBar";
 import { SidebarProvider } from "../../context/SidebarProvider";
 import { useSidebar } from "../../context/hooks/useSidebar";
 
+// Sidebar order: POS first, then Order History → Returns/Refunds → Customers → Shift Summary.
 const navItems = [
   {
     path: "/cashier",
