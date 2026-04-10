@@ -23,6 +23,11 @@ import { startShift } from '../../../Redux Toolkit/features/shiftReport/shiftRep
 import { ThemeToggle } from '../../../components/theme-toggle'
 import { forgotPassword } from '../../../Redux Toolkit/features/auth/authThunk'
 import { normalizeAppRole } from '@/utils/userRole'
+import { clearUserState } from '@/Redux Toolkit/features/user/userSlice'
+import { logout as clearAuthSession } from '@/Redux Toolkit/features/auth/authSlice'
+import { clearStoreState } from '@/Redux Toolkit/features/store/storeSlice'
+import { clearBranchState } from '@/Redux Toolkit/features/branch/branchSlice'
+import { clearCart } from '@/Redux Toolkit/features/cart/cartSlice'
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false)
@@ -62,6 +67,13 @@ const Login = () => {
         try {
           await dispatch(getUserProfile(jwt)).unwrap()
         } catch (profileErr) {
+          localStorage.removeItem("jwt")
+          localStorage.removeItem("token")
+          dispatch(clearUserState())
+          dispatch(clearAuthSession())
+          dispatch(clearStoreState())
+          dispatch(clearBranchState())
+          dispatch(clearCart())
           toast({
             title: "Error",
             description:

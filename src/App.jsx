@@ -8,6 +8,11 @@ import AuthRoutes from "./routes/AuthRoutes";
 import StoreRoutes from "./routes/StoreRoutes";
 import BranchManagerRoutes from "./routes/BranchManagerRoutes";
 import { getUserProfile } from "./Redux Toolkit/features/user/userThunks";
+import { clearUserState } from "./Redux Toolkit/features/user/userSlice";
+import { logout as clearAuthSession } from "./Redux Toolkit/features/auth/authSlice";
+import { clearStoreState } from "./Redux Toolkit/features/store/storeSlice";
+import { clearBranchState } from "./Redux Toolkit/features/branch/branchSlice";
+import { clearCart } from "./Redux Toolkit/features/cart/cartSlice";
 import Landing from "./pages/common/Landing/Landing";
 import CashierRoutes from "./routes/CashierRoutes";
 import Onboarding from "./pages/onboarding/Onboarding";
@@ -54,6 +59,15 @@ const App = () => {
           } else if (role === "ROLE_STORE_MANAGER") {
             await dispatch(getStoreByEmployee());
           }
+        } else {
+          // Invalid/expired token — avoid infinite loader + logged-out 404 on /store
+          localStorage.removeItem("jwt");
+          localStorage.removeItem("token");
+          dispatch(clearUserState());
+          dispatch(clearAuthSession());
+          dispatch(clearStoreState());
+          dispatch(clearBranchState());
+          dispatch(clearCart());
         }
       } finally {
         if (!cancelled) setSessionRestored(true);
@@ -65,6 +79,13 @@ const App = () => {
   }, [dispatch]);
 
   if (!sessionRestored) {
+    return <SessionRestoringScreen />;
+  }
+
+  // After login, JWT is written before getUserProfile lands in Redux; sessionRestored may already
+  // be true from the initial no-JWT mount — that frame used the logged-out route tree and /store → 404.
+  const jwt = typeof window !== "undefined" ? localStorage.getItem("jwt") : null;
+  if (jwt && !userProfile) {
     return <SessionRestoringScreen />;
   }
 
@@ -122,6 +143,8 @@ const App = () => {
         // console.log("get inside 1");
         content = (
           <Routes>
+            {/* Marketing home at `/`; onboarding stays at `/auth/onboarding` (avoid `/` → 404 without stealing the landing page). */}
+            <Route path="/" element={<Landing />} />
             <Route path="/auth/onboarding" element={<Onboarding />} />
             <Route
               path="/auth/*"

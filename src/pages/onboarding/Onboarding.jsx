@@ -15,7 +15,6 @@ const Onboarding = () => {
   const { error, isCompleted } = useSelector((state) => state.onboarding);
   
   const [step, setStep] = useState(1);
-  const [fadeIn, setFadeIn] = useState(true);
   const [formData, setFormData] = useState({
     // Owner Details
     fullName: '',
@@ -75,20 +74,14 @@ const Onboarding = () => {
       // Signup step
       setLocalLoading(true);
       try {
-        const signupRes = await dispatch(signup({
+        await dispatch(signup({
           fullName: updatedFormData.fullName,
           email: updatedFormData.email,
           password: updatedFormData.password,
           role: 'ROLE_STORE_ADMIN',
         })).unwrap();
-        if (signupRes && signupRes.jwt) {
-          localStorage.setItem('jwt', signupRes.data.jwt);
-        }
-        setFadeIn(false);
-        setTimeout(() => {
-          setStep(2);
-          setFadeIn(true);
-        }, 150);
+        // JWT is already persisted by the signup thunk; avoid duplicate / wrong nested paths.
+        setStep(2);
       } catch (err) {
         setLocalError(err || 'Signup failed');
       }
@@ -115,12 +108,7 @@ const Onboarding = () => {
 
   const handleStepBack = () => {
     if (step > 1) {
-      // Fade out current step
-      setFadeIn(false);
-      setTimeout(() => {
-        setStep(step - 1);
-        setFadeIn(true);
-      }, 150);
+      setStep((s) => s - 1);
     }
   };
 
@@ -252,7 +240,7 @@ const Onboarding = () => {
 
         {/* Right Side - Form Section */}
         <div className="flex-1 flex items-center justify-center p-8 lg:p-8 pt-32 lg:pt-8 lg:h-screen lg:overflow-y-auto">
-          <div className="w-full max-w-md">
+          <div className="relative w-full max-w-md">
             {/* Progress Indicator */}
             <div className="mb-8">
               <div className="flex items-center justify-between mb-4">
@@ -307,11 +295,7 @@ const Onboarding = () => {
                 </p>
               </CardHeader>
               <CardContent className="px-8 pb-8">
-                <div
-                  className={`transition-all duration-300 ease-in-out ${
-                    fadeIn ? 'opacity-100 transform translate-y-0' : 'opacity-0 transform translate-y-4'
-                  }`}
-                >
+                <div className="transition-opacity duration-200 ease-out">
                   {renderStep()}
                 </div>
               </CardContent>

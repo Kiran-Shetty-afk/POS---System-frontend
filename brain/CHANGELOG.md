@@ -4,6 +4,56 @@ All entries are dated and versioned for uniqueness.
 
 ---
 
+## brain-2026-04-10-029
+
+**Date:** 2026-04-10
+
+**Summary:** ESLint `no-unused-vars`: removed unused `signupRes` binding in onboarding step-1 submit (`await dispatch(signup(...)).unwrap()` only).
+
+**Changed:** `src/pages/onboarding/Onboarding.jsx`, `brain/CHANGELOG.md`
+
+---
+
+## brain-2026-04-10-028
+
+**Date:** 2026-04-10
+
+**Summary:** Intermittent **404** after store-admin login or on `/store` was caused by a **routing race**: `sessionRestored` stayed true from the initial “no JWT” mount while `login` wrote JWT **before** `getUserProfile` updated Redux, so `App` briefly rendered the **logged-out** `<Routes>` (no `/store` match → `*`). Fix: show **SessionRestoringScreen** whenever `jwt` exists but `userProfile` is still null; on `getUserProfile` rejection in `App`, clear JWT and Redux like a logout; on profile failure in **Login**, clear JWT/session state so the new gate cannot spin forever.
+
+**Changed:** `src/App.jsx`, `src/pages/common/Auth/Login.jsx`, `brain/CHANGELOG.md`
+
+---
+
+## brain-2026-04-10-027
+
+**Date:** 2026-04-10
+
+**Summary:** Store admin/manager with no store: `/` was changed to redirect to `/auth/onboarding` (brain-2026-04-10-026), which hid the marketing **Landing** page. `/` now renders `<Landing />` again; onboarding remains at `/auth/onboarding` so setup is reachable without a 404 on `/`.
+
+**Changed:** `src/App.jsx`, `brain/CHANGELOG.md`
+
+---
+
+## brain-2026-04-10-026
+
+**Date:** 2026-04-10
+
+**Summary:** Visiting `/` while logged in as **store admin or manager** with **no store** hit the `*` route → **Page Not Found** because that route tree had no `/` match (only `/auth/onboarding` and role redirects). Added `path="/"` → `<Navigate to="/auth/onboarding" replace />` so the marketing home URL resolves to onboarding until a store exists.
+
+**Changed:** `src/App.jsx`, `brain/CHANGELOG.md`
+
+---
+
+## brain-2026-04-10-025
+
+**Date:** 2026-04-10
+
+**Summary:** Onboarding step 1 → 2 showed a **blank white** area until a full reload because the UI faded the form out (`opacity-0`) before swapping steps, and the loading overlay used `position: absolute` without a `relative` parent (covering the viewport). Removed the fade-to-hidden step transition, dropped a redundant/broken JWT `localStorage` line after signup (thunk already saves the token), added `relative` on the form column wrapper, and set Radix **Select** `value` to `undefined` when store type is empty so step 2 mounts reliably.
+
+**Changed:** `src/pages/onboarding/Onboarding.jsx`, `src/pages/onboarding/StoreDetailsForm.jsx`, `brain/CHANGELOG.md`
+
+---
+
 ## brain-2026-04-10-024
 
 **Date:** 2026-04-10

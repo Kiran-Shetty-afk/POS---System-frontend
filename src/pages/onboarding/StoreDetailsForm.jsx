@@ -99,7 +99,7 @@ const StoreDetailsForm = ({ initialValues, onSubmit, onBack }) => {
             <Field name="storeType">
               {({ field, form }) => (
                 <Select
-                  value={field.value}
+                  value={field.value ? field.value : undefined}
                   onValueChange={(val) => form.setFieldValue("storeType", val)}
                 >
                   <SelectTrigger className="w-full" id="storeType">
