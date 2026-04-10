@@ -1,6 +1,7 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Routes, Route, Navigate } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
+import { Loader2 } from "lucide-react";
 
 // Auth and Store Routes
 import AuthRoutes from "./routes/AuthRoutes";
@@ -10,27 +11,59 @@ import { getUserProfile } from "./Redux Toolkit/features/user/userThunks";
 import Landing from "./pages/common/Landing/Landing";
 import CashierRoutes from "./routes/CashierRoutes";
 import Onboarding from "./pages/onboarding/Onboarding";
-import { getStoreByAdmin } from "./Redux Toolkit/features/store/storeThunks";
+import {
+  getStoreByAdmin,
+  getStoreByEmployee,
+} from "./Redux Toolkit/features/store/storeThunks";
 import SuperAdminRoutes from "./routes/SuperAdminRoutes";
 import PageNotFound from "./pages/common/PageNotFound";
+
+const SessionRestoringScreen = () => (
+  <div className="flex min-h-screen items-center justify-center bg-background">
+    <Loader2 className="h-10 w-10 animate-spin text-muted-foreground" aria-hidden />
+    <span className="sr-only">Loading session</span>
+  </div>
+);
 
 const App = () => {
   const dispatch = useDispatch();
   const { userProfile } = useSelector((state) => state.user);
   const { store } = useSelector((state) => state.store);
+  const [sessionRestored, setSessionRestored] = useState(
+    () => typeof window === "undefined" || !localStorage.getItem("jwt")
+  );
 
   useEffect(() => {
     const jwt = localStorage.getItem("jwt");
-    if (jwt) {
-      dispatch(getUserProfile(jwt));
+    if (!jwt) {
+      setSessionRestored(true);
+      return;
     }
+    let cancelled = false;
+    (async () => {
+      try {
+        const result = await dispatch(getUserProfile(jwt));
+        if (cancelled) return;
+        if (getUserProfile.fulfilled.match(result)) {
+          const role = result.payload?.role;
+          if (role === "ROLE_STORE_ADMIN") {
+            await dispatch(getStoreByAdmin());
+          } else if (role === "ROLE_STORE_MANAGER") {
+            await dispatch(getStoreByEmployee());
+          }
+        }
+      } finally {
+        if (!cancelled) setSessionRestored(true);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
   }, [dispatch]);
 
-  useEffect(() => {
-    if (userProfile && userProfile.role === "ROLE_STORE_ADMIN") {
-      dispatch(getStoreByAdmin(userProfile.jwt));
-    }
-  }, [dispatch, userProfile]);
+  if (!sessionRestored) {
+    return <SessionRestoringScreen />;
+  }
 
   let content;
 

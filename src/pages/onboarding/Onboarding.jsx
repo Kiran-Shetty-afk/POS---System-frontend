@@ -44,7 +44,7 @@ const Onboarding = () => {
               const storeRes = await dispatch(getStoreByAdmin(jwt)).unwrap();
               if (storeRes && storeRes.id) {
                 // Store exists, redirect to dashboard or show message
-                navigate('/store');
+                navigate('/store', { replace: true });
                 
                 return;
               } else {
@@ -105,7 +105,7 @@ const Onboarding = () => {
           
         })).unwrap();
         // On success, redirect or show success
-        navigate('/store');
+        navigate('/store', { replace: true });
       } catch (err) {
         setLocalError(err || 'Store creation failed');
       }

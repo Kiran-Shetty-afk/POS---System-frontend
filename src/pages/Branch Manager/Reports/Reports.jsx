@@ -4,6 +4,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Calendar, Download, FileText, BarChart2, TrendingUp, Users } from "lucide-react";
+import { useToast } from "@/components/ui/use-toast";
+import { buildCsv, downloadCsvFile } from "@/utils/csvExport";
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, PieChart as RPieChart, Pie, Cell } from "recharts";
 import { ChartContainer, ChartTooltip, ChartTooltipContent, ChartLegend, ChartLegendContent } from "@/components/ui/chart";
 import {
@@ -17,6 +19,7 @@ const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884d8'];
 
 const Reports = () => {
   const dispatch = useDispatch();
+  const { toast } = useToast();
   const branchId = useSelector((state) => state.branch.branch?.id);
   const {
     dailySales,
@@ -95,9 +98,147 @@ const Reports = () => {
     }).format(amount);
   };
 
-  const handleExport = (type, format) => {
-    console.log(`Exporting ${type} report in ${format} format`);
-    // Implement export functionality
+  /**
+   * Fetches fresh analytics from the API and downloads a CSV (Excel opens CSV).
+   * @param {'sales'|'payments'|'products'|'cashier'} type
+   * @param {{ quiet?: boolean }} options — quiet: no per-file success toast (for Export All)
+   */
+  const exportBranchReport = async (type, options = {}) => {
+    const { quiet = false } = options;
+    if (!branchId) {
+      toast({
+        title: "No branch selected",
+        description: "Branch context is required to export reports.",
+        variant: "destructive",
+      });
+      return false;
+    }
+
+    const today = new Date().toISOString().slice(0, 10);
+
+    try {
+      let headers;
+      let rows;
+      let filename;
+
+      switch (type) {
+        case "sales": {
+          const data = await dispatch(getDailySalesChart({ branchId })).unwrap();
+          headers = ["Date", "Total Sales"];
+          rows = (data || []).map((r) => [
+            r.date ?? "",
+            r.totalSales ?? r.totalAmount ?? "",
+          ]);
+          filename = `branch-reports-daily-sales-${branchId}-${today}.csv`;
+          break;
+        }
+        case "payments": {
+          const data = await dispatch(
+            getPaymentBreakdown({ branchId, date: today })
+          ).unwrap();
+          headers = [
+            "Payment Type",
+            "Percentage",
+            "Total Amount",
+            "Transaction Count",
+          ];
+          rows = (data || []).map((r) => [
+            r.type ?? "",
+            r.percentage ?? "",
+            r.totalAmount ?? "",
+            r.transactionCount ?? "",
+          ]);
+          filename = `branch-reports-payment-breakdown-${branchId}-${today}.csv`;
+          break;
+        }
+        case "products": {
+          const data = await dispatch(
+            getCategoryWiseSalesBreakdown({ branchId, date: today })
+          ).unwrap();
+          headers = ["Category", "Total Sales"];
+          rows = (data || []).map((r) => [
+            r.categoryName ?? r.name ?? "",
+            r.totalSales ?? r.totalAmount ?? "",
+          ]);
+          filename = `branch-reports-category-sales-${branchId}-${today}.csv`;
+          break;
+        }
+        case "cashier": {
+          const data = await dispatch(getTopCashiersByRevenue(branchId)).unwrap();
+          headers = ["Cashier Name", "Total Revenue"];
+          rows = (data || []).map((r) => [
+            r.cashierName ?? "",
+            r.totalRevenue ?? "",
+          ]);
+          filename = `branch-reports-top-cashiers-${branchId}-${today}.csv`;
+          break;
+        }
+        default:
+          return false;
+      }
+
+      if (!rows?.length) {
+        if (!quiet) {
+          toast({
+            title: "Nothing to export",
+            description: "No data returned for this report.",
+            variant: "destructive",
+          });
+        }
+        return false;
+      }
+
+      downloadCsvFile(filename, buildCsv(headers, rows));
+      if (!quiet) {
+        toast({
+          title: "Export ready",
+          description: `Downloaded ${rows.length} row(s).`,
+        });
+      }
+      return true;
+    } catch (e) {
+      const msg =
+        typeof e === "string" ? e : e?.message || "Could not export report.";
+      toast({
+        title: "Export failed",
+        description: msg,
+        variant: "destructive",
+      });
+      return false;
+    }
+  };
+
+  const handleExport = (type, _format) => {
+    void exportBranchReport(type);
+  };
+
+  const handleExportAll = async () => {
+    if (!branchId) {
+      toast({
+        title: "No branch selected",
+        description: "Branch context is required.",
+        variant: "destructive",
+      });
+      return;
+    }
+    const types = ["sales", "payments", "products", "cashier"];
+    let count = 0;
+    for (const t of types) {
+      const ok = await exportBranchReport(t, { quiet: true });
+      if (ok) count += 1;
+    }
+    if (count === 0) {
+      toast({
+        title: "Nothing exported",
+        description: "No report data was available.",
+        variant: "destructive",
+      });
+    } else {
+      toast({
+        title: "Exports complete",
+        description: `${count} CSV file(s) downloaded.`,
+      });
+    }
   };
 
   return (
@@ -111,7 +252,12 @@ const Reports = () => {
             {/* {dateRange.startDate} - {dateRange.endDate} */}
             Today
           </Button>
-          <Button variant="outline" size="sm">
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={() => void handleExportAll()}
+          >
             <Download className="h-4 w-4 mr-1" />
             Export All
           </Button>

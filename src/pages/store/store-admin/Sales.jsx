@@ -15,6 +15,7 @@ import {
   getSalesByPaymentMethod 
 } from "@/Redux Toolkit/features/storeAnalytics/storeAnalyticsThunks";
 import { useToast } from "@/components/ui/use-toast";
+import { buildCsv, downloadCsvFile } from "@/utils/csvExport";
 
 export default function Sales() {
   const dispatch = useDispatch();
@@ -94,15 +95,67 @@ export default function Sales() {
     },
   };
 
-  console.log("sales daily", dailySales)
+  const handleExportSalesCsv = () => {
+    if (!userProfile?.id) {
+      toast({
+        title: "Not signed in",
+        description: "Store admin profile is required to export.",
+        variant: "destructive",
+      });
+      return;
+    }
+    const today = new Date().toISOString().slice(0, 10);
+    const dailyRows = (dailySales || []).map((d) => [
+      d.date ?? "",
+      d.totalAmount ?? d.totalSales ?? "",
+    ]);
+    const paymentRows = (salesByPaymentMethod || []).map((p) => [
+      p.paymentMethod ?? p.type ?? "",
+      p.totalAmount ?? "",
+    ]);
+    if (!dailyRows.length && !paymentRows.length) {
+      toast({
+        title: "Nothing to export",
+        description: "No sales data loaded yet.",
+        variant: "destructive",
+      });
+      return;
+    }
+    if (dailyRows.length) {
+      downloadCsvFile(
+        `store-daily-sales-${userProfile.id}-${today}.csv`,
+        buildCsv(["Date", "Total Amount"], dailyRows)
+      );
+    }
+    if (paymentRows.length) {
+      setTimeout(() => {
+        downloadCsvFile(
+          `store-payment-methods-${userProfile.id}-${today}.csv`,
+          buildCsv(["Payment Method", "Total Amount"], paymentRows)
+        );
+      }, 200);
+    }
+    toast({
+      title: "Export ready",
+      description:
+        [dailyRows.length && "daily sales", paymentRows.length && "payment methods"]
+          .filter(Boolean)
+          .join(" & ") + " CSV downloaded.",
+    });
+  };
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
+      <div className="flex justify-between items-center flex-wrap gap-2">
         <h1 className="text-3xl font-bold tracking-tight">Sales Management</h1>
-        <Button className="bg-emerald-600 hover:bg-emerald-700">
-          <Plus className="mr-2 h-4 w-4" /> New Sale
-        </Button>
+        <div className="flex gap-2">
+          <Button type="button" variant="outline" onClick={handleExportSalesCsv}>
+            <Download className="mr-2 h-4 w-4" /> Export CSV
+          </Button>
+          <Button className="bg-emerald-600 hover:bg-emerald-700">
+            <Plus className="mr-2 h-4 w-4" /> New Sale
+          </Button>
+        </div>
       </div>
 
       {/* Stats Cards */}

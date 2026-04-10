@@ -62,19 +62,20 @@ const Login = () => {
         dispatch(getUserProfile(resultAction.payload.jwt)); 
         
         
-        // Redirect based on user role
+        // Redirect based on user role (replace so browser Back does not return to login/auth)
         const userRole = user.role
         if (userRole === 'ROLE_BRANCH_CASHIER') {
-          navigate('/cashier')
+          navigate('/cashier', { replace: true })
           dispatch(startShift(user.branchId))
         
         } else if (userRole === 'ROLE_STORE_ADMIN' || userRole === 'ROLE_STORE_MANAGER') {
-          navigate('/store')
+          navigate('/store', { replace: true })
         } else if (userRole === 'ROLE_BRANCH_MANAGER' || userRole === 'ROLE_BRANCH_ADMIN') {
-          navigate('/branch')
+          navigate('/branch', { replace: true })
+        } else if (userRole === 'ROLE_ADMIN') {
+          navigate('/super-admin', { replace: true })
         } else {
-          // Unknown role, redirect to landing page
-          navigate('/')
+          navigate('/', { replace: true })
         }
       } else {
         toast({

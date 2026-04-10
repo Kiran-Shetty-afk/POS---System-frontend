@@ -11,6 +11,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { EmployeeForm } from "../../store/Employee";
 import { Plus } from "lucide-react";
+import { useToast } from "@/components/ui/use-toast";
+import { buildCsv, downloadCsvFile } from "@/utils/csvExport";
 
 export const AddEmployeeDialog = ({
   isAddDialogOpen,
@@ -108,8 +110,56 @@ export const PerformanceDialog = ({
   isPerformanceDialogOpen,
   setIsPerformanceDialogOpen,
   selectedEmployee,
-}) =>
-  selectedEmployee && (
+}) => {
+  const { toast } = useToast();
+
+  const handleExportPerformanceCsv = () => {
+    if (!selectedEmployee) return;
+    const date = new Date().toISOString().slice(0, 10);
+    const safeId = String(selectedEmployee.id ?? selectedEmployee.name ?? "employee").replace(
+      /[^\w-]+/g,
+      "_"
+    );
+    let csv;
+    if (selectedEmployee.role === "ROLE_BRANCH_CASHIER") {
+      csv = buildCsv(
+        ["Metric", "Value", "Period"],
+        [
+          ["Orders Processed", "127", "Last 30 days"],
+          ["Total Sales", "78450", "Last 30 days"],
+          ["Avg. Order Value", "617", "Last 30 days"],
+        ]
+      );
+    } else {
+      csv =
+        buildCsv(
+          ["Metric", "Value", "Period"],
+          [
+            ["Stock Updates", "42", "Last 30 days"],
+            ["Products Managed", "156", "Total"],
+            ["Inventory Accuracy", "98%", "Last audit"],
+          ]
+        ) +
+        "\r\n\r\n" +
+        buildCsv(
+          ["Activity", "Category", "When"],
+          [
+            ["Updated stock for 12 products", "Grocery category", "2 days ago"],
+            ["Added 5 new products", "Dairy category", "5 days ago"],
+            ["Completed monthly inventory audit", "All categories", "1 week ago"],
+          ]
+        );
+    }
+    downloadCsvFile(`employee-performance-${safeId}-${date}.csv`, csv);
+    toast({
+      title: "Export ready",
+      description: "Performance summary downloaded as CSV.",
+    });
+  };
+
+  if (!selectedEmployee) return null;
+
+  return (
     <Dialog
       open={isPerformanceDialogOpen}
       onOpenChange={setIsPerformanceDialogOpen}
@@ -261,8 +311,11 @@ export const PerformanceDialog = ({
           <Button onClick={() => setIsPerformanceDialogOpen(false)}>
             Close
           </Button>
-          <Button variant="outline">Export Report</Button>
+          <Button type="button" variant="outline" onClick={handleExportPerformanceCsv}>
+            Export Report
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
   );
+};

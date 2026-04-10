@@ -1,5 +1,5 @@
 import React from 'react';
-import { Routes, Route } from 'react-router';
+import { Routes, Route, Navigate } from 'react-router';
 import Login from '../pages/common/Auth/Login';
 import ResetPassword from '../pages/common/Auth/ResetPassword';
 import Onboarding from '../pages/onboarding/Onboarding';
@@ -11,6 +11,7 @@ const ForgotPasswordPage = () => <div className="flex items-center justify-cente
 const AuthRoutes = () => {
   return (
     <Routes>
+      <Route index element={<Navigate to="login" replace />} />
       <Route path="login" element={<Login />} />
       <Route path="onboarding" element={<Onboarding />} />
       <Route path="forgot-password" element={<ForgotPasswordPage />} />

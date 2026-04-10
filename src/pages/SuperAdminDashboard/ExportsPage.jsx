@@ -7,6 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from ".
 import { Badge } from "../../components/ui/badge";
 import { Download, FileText, Calendar, Filter, CheckCircle } from "lucide-react";
 import { useToast } from "../../components/ui/use-toast";
+import { buildCsv, downloadCsvFile } from "@/utils/csvExport";
 // import { useToast } from "../../hooks/use-toast";
 
 const exportTypes = [
@@ -84,13 +85,38 @@ export default function ExportsPage() {
     }
 
     setIsExporting(true);
-    
-    // Simulate export process
+
     setTimeout(() => {
-      const exportType = exportTypes.find(type => type.id === selectedType);
+      const exportType = exportTypes.find((type) => type.id === selectedType);
+      if (!exportType) {
+        setIsExporting(false);
+        return;
+      }
+      const headers = [
+        "Export Type",
+        "Description",
+        "Format",
+        "Date From",
+        "Date To",
+        "Generated At",
+      ];
+      const rows = [
+        [
+          exportType.name,
+          exportType.description,
+          exportType.format,
+          dateRange.from || "",
+          dateRange.to || "",
+          new Date().toISOString(),
+        ],
+      ];
+      downloadCsvFile(
+        `superadmin-export-${selectedType}-${new Date().toISOString().slice(0, 10)}.csv`,
+        buildCsv(headers, rows)
+      );
       toast({
-        title: "Export Started",
-        description: `${exportType.name} export has been initiated. You'll receive a notification when it's ready.`,
+        title: "Export ready",
+        description: `${exportType.name} saved as CSV.`,
       });
       setIsExporting(false);
       setSelectedType("");
@@ -98,10 +124,21 @@ export default function ExportsPage() {
     }, 2000);
   };
 
-  const handleDownload = (_exportId) => {
+  const handleDownload = (exportItem) => {
+    const headers = ["Type", "Date", "Status", "Size", "Downloads"];
+    const rows = [
+      [
+        exportItem.type,
+        exportItem.date,
+        exportItem.status,
+        exportItem.size,
+        String(exportItem.downloads),
+      ],
+    ];
+    downloadCsvFile(`export-record-${exportItem.id}.csv`, buildCsv(headers, rows));
     toast({
-      title: "Download Started",
-      description: "Your file download has begun.",
+      title: "Download ready",
+      description: "CSV file saved.",
     });
   };
 
@@ -261,7 +298,7 @@ export default function ExportsPage() {
                   <Button
                     variant="outline"
                     size="sm"
-                    onClick={() => handleDownload(exportItem.id)}
+                    onClick={() => handleDownload(exportItem)}
                   >
                     <Download className="w-4 h-4 mr-1" />
                     Download

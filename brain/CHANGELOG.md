@@ -4,6 +4,26 @@ All entries are dated and versioned for uniqueness.
 
 ---
 
+## brain-2026-04-10-016
+
+**Date:** 2026-04-10
+
+**Summary:** Fixed logged-in users hitting 404 or auth when using the browser Back button or refreshing on app routes. Root cause: `userProfile` was null on the first paint while JWT existed, so `App` rendered the logged-out route tree and `*` matched → `PageNotFound`. Session is now restored in one async pass (profile + store fetch for store admin/manager) behind a full-screen loader until complete. Post-login and onboarding navigations use `replace: true` so Back does not return to login. Added `/auth` → `/auth/login` index redirect and explicit `ROLE_ADMIN` → `/super-admin` after login.
+
+**Changed:** `src/App.jsx`, `src/pages/common/Auth/Login.jsx`, `src/pages/onboarding/Onboarding.jsx`, `src/routes/AuthRoutes.jsx`
+
+---
+
+## brain-2026-04-10-015
+
+**Date:** 2026-04-10
+
+**Summary:** CSV export wired across app surfaces that had Export/Download UI: Branch Reports (per-chart + Export All via `branchAnalytics` thunks + `unwrap()`), Branch Employee Performance dialog (summary rows from on-screen metrics), Super Admin Exports page (generate + recent-row download), Store Admin Sales (daily sales + payment methods from `storeAnalytics`). Reuses shared `src/utils/csvExport.js`.
+
+**Changed:** `src/pages/Branch Manager/Reports/Reports.jsx`, `src/pages/Branch Manager/Employees/EmployeeDialogs.jsx`, `src/pages/SuperAdminDashboard/ExportsPage.jsx`, `src/pages/store/store-admin/Sales.jsx`
+
+---
+
 ## brain-2026-04-10-014
 
 **Date:** 2026-04-10
