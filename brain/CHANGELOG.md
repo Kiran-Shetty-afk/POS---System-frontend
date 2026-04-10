@@ -4,6 +4,16 @@ All entries are dated and versioned for uniqueness.
 
 ---
 
+## brain-2026-04-10-020
+
+**Date:** 2026-04-10
+
+**Summary:** POS Admin (store admin / manager) post-login 404: `App` only fetches `getStoreByAdmin` / `getStoreByEmployee` in the initial `useEffect` when JWT was already present at first paint. After a fresh login, `store` stayed `null` while navigation went to `/store`, which is not registered in the `!store` route branch → `PageNotFound`. Login now awaits the appropriate store thunk before `navigate("/store")`, and sends users to `/auth/onboarding` when no store exists (thunk rejects).
+
+**Changed:** `src/pages/common/Auth/Login.jsx`
+
+---
+
 ## brain-2026-04-10-019
 
 **Date:** 2026-04-10

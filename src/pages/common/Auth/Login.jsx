@@ -15,6 +15,10 @@ import { Link, useNavigate } from 'react-router'
 import { useDispatch, useSelector } from 'react-redux'
 import { login } from '@/Redux Toolkit/features/auth/authThunk'
 import { getUserProfile } from '../../../Redux Toolkit/features/user/userThunks'
+import {
+  getStoreByAdmin,
+  getStoreByEmployee,
+} from '../../../Redux Toolkit/features/store/storeThunks'
 import { startShift } from '../../../Redux Toolkit/features/shiftReport/shiftReportThunks'
 import { ThemeToggle } from '../../../components/theme-toggle'
 import { forgotPassword } from '../../../Redux Toolkit/features/auth/authThunk'
@@ -84,7 +88,18 @@ const Login = () => {
           userRole === "ROLE_STORE_ADMIN" ||
           userRole === "ROLE_STORE_MANAGER"
         ) {
-          navigate("/store", { replace: true })
+          // App only loads store on initial session restore; after fresh login `store` is null
+          // until we fetch it — otherwise `/store` hits the no-store route tree and 404s.
+          try {
+            if (userRole === "ROLE_STORE_ADMIN") {
+              await dispatch(getStoreByAdmin()).unwrap()
+            } else {
+              await dispatch(getStoreByEmployee()).unwrap()
+            }
+            navigate("/store", { replace: true })
+          } catch {
+            navigate("/auth/onboarding", { replace: true })
+          }
         } else if (
           userRole === "ROLE_BRANCH_MANAGER" ||
           userRole === "ROLE_BRANCH_ADMIN"
