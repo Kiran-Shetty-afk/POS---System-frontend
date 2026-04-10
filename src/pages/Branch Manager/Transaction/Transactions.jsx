@@ -27,6 +27,8 @@ import { useDispatch } from "react-redux";
 import { useEffect } from "react";
 import { getOrdersByBranch } from "../../../Redux Toolkit/features/order/orderThunks";
 import { Printer } from "lucide-react";
+import { useToast } from "@/components/ui/use-toast";
+import { buildCsv, downloadCsvFile } from "@/utils/csvExport";
 
 
 
@@ -34,6 +36,7 @@ export default function Transactions() {
   const { orders } = useSelector((state) => state.order);
   const { branch } = useSelector((state) => state.branch);
   const dispatch = useDispatch();
+  const { toast } = useToast();
   const [selectedTransaction, setSelectedTransaction] = useState(null);
   const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
 
@@ -60,11 +63,60 @@ export default function Transactions() {
     setIsViewDialogOpen(true);
   };
 
+  const handleExportCsv = () => {
+    if (!orders?.length) {
+      toast({
+        title: "Nothing to export",
+        description: "There are no transactions to download.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const headers = [
+      "Order ID",
+      "Date & Time",
+      "Cashier ID",
+      "Customer",
+      "Amount",
+      "Payment Method",
+      "Status",
+      "Type",
+    ];
+
+    const dataRows = orders.map((t) => [
+      t.id ?? "",
+      t.createdAt ?? "",
+      t.cashierId ?? "",
+      t.customer?.fullName ?? "",
+      typeof t.totalAmount === "number"
+        ? t.totalAmount.toFixed(2)
+        : (t.totalAmount ?? ""),
+      t.paymentType ?? "",
+      t.status ?? "",
+      t.type ?? "",
+    ]);
+
+    const csv = buildCsv(headers, dataRows);
+    const branchPart = branch?.id != null ? String(branch.id) : "branch";
+    const datePart = new Date().toISOString().slice(0, 10);
+    downloadCsvFile(`transactions-${branchPart}-${datePart}.csv`, csv);
+
+    toast({
+      title: "Export ready",
+      description: `Downloaded ${orders.length} row(s) as CSV.`,
+    });
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <h1 className="text-3xl font-bold tracking-tight">Transactions</h1>
-        <Button className="bg-emerald-600 hover:bg-emerald-700">
+        <Button
+          type="button"
+          className="bg-emerald-600 hover:bg-emerald-700"
+          onClick={handleExportCsv}
+        >
           <Download className="mr-2 h-4 w-4" /> Export Transactions
         </Button>
       </div>

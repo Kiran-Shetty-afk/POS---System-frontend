@@ -4,6 +4,26 @@ All entries are dated and versioned for uniqueness.
 
 ---
 
+## brain-2026-04-10-014
+
+**Date:** 2026-04-10
+
+**Summary:** Branch Transactions “Export Transactions” builds a UTF-8 CSV (with BOM for Excel) from Redux `orders` (`getOrdersByBranch`): Order ID, date, cashier, customer, amount, payment, status, type. Added `src/utils/csvExport.js` (`buildCsv`, `downloadCsvFile`).
+
+**Changed:** `src/pages/Branch Manager/Transaction/Transactions.jsx`, `src/utils/csvExport.js`
+
+---
+
+## brain-2026-04-10-013
+
+**Date:** 2026-04-10
+
+**Summary:** Removed POS Terminal header keyboard shortcut hint (`F1…` / `Ctrl+Enter`) from `POSHeader`.
+
+**Changed:** `src/pages/cashier/components/POSHeader.jsx`
+
+---
+
 ## brain-2026-04-10-012
 
 **Date:** 2026-04-10
