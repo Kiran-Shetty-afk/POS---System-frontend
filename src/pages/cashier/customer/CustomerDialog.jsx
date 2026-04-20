@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { useDispatch, useSelector } from 'react-redux';
-import { getAllCustomers } from '@/Redux Toolkit/features/customer/customerThunks';
+import { getScopedCustomers } from '@/Redux Toolkit/features/customer/customerThunks';
 import CustomerForm from './CustomerForm';
 import { setSelectedCustomer } from '../../../Redux Toolkit/features/cart/cartSlice';
 import { useToast } from '../../../components/ui/use-toast';
@@ -16,16 +16,20 @@ const CustomerDialog = ({
   const dispatch = useDispatch();
   const { toast } = useToast();
   const { customers, loading } = useSelector(state => state.customer);
+  const branch = useSelector((state) => state.branch.branch);
+  const userProfile = useSelector((state) => state.user.userProfile);
+  const branchId = branch?.id ?? userProfile?.branchId;
+  const storeId = branch?.storeId ?? userProfile?.storeId;
   
   const [searchTerm, setSearchTerm] = useState('');
   const [showCustomerForm, setShowCustomerForm] = useState(false);
 
   // Fetch customers when dialog opens
   useEffect(() => {
-    if (showCustomerDialog) {
-      dispatch(getAllCustomers());
+    if (showCustomerDialog && branchId) {
+      dispatch(getScopedCustomers({ branchId }));
     }
-  }, [showCustomerDialog, dispatch]);
+  }, [showCustomerDialog, branchId, dispatch]);
 
   // Filter customers based on search term
   const filteredCustomers = customers.filter(customer =>
@@ -102,7 +106,7 @@ const CustomerDialog = ({
         <CustomerForm 
           showCustomerForm={showCustomerForm}
           setShowCustomerForm={setShowCustomerForm}
-       
+          scope={{ branchId, storeId }}
         />
         
         <DialogFooter>

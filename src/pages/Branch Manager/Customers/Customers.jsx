@@ -23,18 +23,20 @@ import { getStatusColor } from "../../../utils/getStatusColor";
 import { calculateCustomerStats } from "../../cashier/customer/utils/customerUtils";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
-import { getAllCustomers } from "../../../Redux Toolkit/features/customer/customerThunks";
+import { getScopedCustomers } from "../../../Redux Toolkit/features/customer/customerThunks";
 import { clearCustomerOrders } from "../../../Redux Toolkit/features/order/orderSlice";
 import { getOrdersByCustomer } from "../../../Redux Toolkit/features/order/orderThunks";
 
 const Customers = () => {
   const { customerOrders } = useSelector((state) => state.order);
-
   const { customers } = useSelector((state) => state.customer);
+  const { branch } = useSelector((state) => state.branch);
+  const { userProfile } = useSelector((state) => state.user);
   const [searchTerm, setSearchTerm] = useState("");
   const [isCustomerDetailsOpen, setIsCustomerDetailsOpen] = useState(false);
   const [selectedCustomer, setSelectedCustomer] = useState(null);
   const dispatch = useDispatch();
+  const branchId = branch?.id ?? userProfile?.branchId;
 
   // Filter customers based on search term
   const filteredCustomers = customers.filter((customer) => {
@@ -46,8 +48,10 @@ const Customers = () => {
   });
 
   useEffect(() => {
-    dispatch(getAllCustomers());
-  }, [dispatch]);
+    if (branchId) {
+      dispatch(getScopedCustomers({ branchId }));
+    }
+  }, [branchId, dispatch]);
 
   const handleSearch = (e) => {
     setSearchTerm(e.target.value);
@@ -75,6 +79,15 @@ const Customers = () => {
         ...customerStats,
       }
     : null;
+
+  const totalCustomerOrders = customers.reduce((sum, customer) => {
+    const orderCount = Number(customer.totalOrders);
+    return sum + (Number.isFinite(orderCount) ? orderCount : 0);
+  }, 0);
+
+  const averageOrdersPerCustomer = customers.length
+    ? (totalCustomerOrders / customers.length).toFixed(1)
+    : "0.0";
 
   console.log("display customer ", displayCustomer);
   return (
@@ -132,10 +145,7 @@ const Customers = () => {
                 Avg. Orders per Customer
               </h3>
               <p className="text-3xl font-bold mt-2 text-blue-600">
-                {Math.round(
-                  customers.reduce((sum, c) => sum + c.totalOrders, 0) /
-                    customers.length
-                )}
+                {averageOrdersPerCustomer}
               </p>
             </div>
           </CardContent>

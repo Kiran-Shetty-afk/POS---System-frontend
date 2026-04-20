@@ -19,6 +19,66 @@ const getAuthHeaders = () => {
   };
 };
 
+const dedupeCustomersById = (customers = []) => {
+  const seen = new Set();
+  return customers.filter((customer) => {
+    if (customer?.id == null || seen.has(customer.id)) return false;
+    seen.add(customer.id);
+    return true;
+  });
+};
+
+const filterCustomersByBranchOrStore = async ({ branchId, storeId, headers }) => {
+  const customersRes = await api.get('/api/customers', { headers });
+  const customers = customersRes.data || [];
+
+  if (branchId) {
+    const ordersRes = await api.get(`/api/orders/branch/${branchId}`, { headers });
+    const allowedCustomerIds = new Set(
+      (ordersRes.data || [])
+        .map((order) => order.customer?.id)
+        .filter((customerId) => customerId != null)
+    );
+
+    return dedupeCustomersById(
+      customers.filter((customer) =>
+        customer?.branchId === branchId ||
+        customer?.branch?.id === branchId ||
+        allowedCustomerIds.has(customer.id)
+      )
+    );
+  }
+
+  if (storeId) {
+    const branchesRes = await api.get(`/api/branches/store/${storeId}`, { headers });
+    const branches = branchesRes.data || [];
+    const orderResponses = await Promise.all(
+      branches
+        .map((branch) => branch?.id)
+        .filter((id) => id != null)
+        .map((id) => api.get(`/api/orders/branch/${id}`, { headers }))
+    );
+
+    const allowedCustomerIds = new Set(
+      orderResponses.flatMap((response) =>
+        (response.data || [])
+          .map((order) => order.customer?.id)
+          .filter((customerId) => customerId != null)
+      )
+    );
+
+    return dedupeCustomersById(
+      customers.filter((customer) =>
+        customer?.storeId === storeId ||
+        customer?.store?.id === storeId ||
+        allowedCustomerIds.has(customer.id)
+      )
+    );
+  }
+
+  return customers;
+};
+
 // 🔹 Create Customer
 export const createCustomer = createAsyncThunk(
   'customer/create',
@@ -194,6 +254,53 @@ export const getAllCustomers = createAsyncThunk(
         statusText: err.response?.statusText
       });
       
+      return rejectWithValue(err.response?.data?.message || 'Failed to fetch customers');
+    }
+  }
+);
+
+export const getScopedCustomers = createAsyncThunk(
+  'customer/getScoped',
+  async ({ branchId = null, storeId = null } = {}, { rejectWithValue }) => {
+    try {
+      console.log('🔄 Fetching scoped customers...', { branchId, storeId });
+
+      const headers = getAuthHeaders();
+
+      if (branchId != null) {
+        try {
+          const res = await api.get(`/api/customers/branch/${branchId}`, { headers });
+          return dedupeCustomersById(res.data || []);
+        } catch (branchErr) {
+          const status = branchErr.response?.status;
+          if (status && status !== 404 && status !== 405) {
+            throw branchErr;
+          }
+        }
+      }
+
+      if (storeId != null) {
+        try {
+          const res = await api.get(`/api/customers/store/${storeId}`, { headers });
+          return dedupeCustomersById(res.data || []);
+        } catch (storeErr) {
+          const status = storeErr.response?.status;
+          if (status && status !== 404 && status !== 405) {
+            throw storeErr;
+          }
+        }
+      }
+
+      return await filterCustomersByBranchOrStore({ branchId, storeId, headers });
+    } catch (err) {
+      console.error('❌ Failed to fetch scoped customers:', {
+        branchId,
+        storeId,
+        error: err.response?.data || err.message,
+        status: err.response?.status,
+        statusText: err.response?.statusText
+      });
+
       return rejectWithValue(err.response?.data?.message || 'Failed to fetch customers');
     }
   }

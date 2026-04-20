@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useToast } from "@/components/ui/use-toast";
 import {
   addLoyaltyPoints,
-  getAllCustomers,
+  getScopedCustomers,
 } from "@/Redux Toolkit/features/customer/customerThunks";
 import {
   getOrdersByCustomer,
@@ -28,6 +28,10 @@ import CustomerForm from "./CustomerForm";
 const CustomerLookupPage = () => {
   const dispatch = useDispatch();
   const { toast } = useToast();
+  const branch = useSelector((state) => state.branch.branch);
+  const userProfile = useSelector((state) => state.user.userProfile);
+  const branchId = branch?.id ?? userProfile?.branchId;
+  const storeId = branch?.storeId ?? userProfile?.storeId;
 
   // Redux state
   const {
@@ -52,8 +56,10 @@ const CustomerLookupPage = () => {
 
   // Load customers on component mount
   useEffect(() => {
-    dispatch(getAllCustomers());
-  }, [dispatch]);
+    if (branchId) {
+      dispatch(getScopedCustomers({ branchId }));
+    }
+  }, [branchId, dispatch]);
 
   // Handle errors
   useEffect(() => {
@@ -208,7 +214,7 @@ const CustomerLookupPage = () => {
         <CustomerForm 
           showCustomerForm={showCustomerForm}
           setShowCustomerForm={setShowCustomerForm}
-          // onCustomerCreated={handleCustomerCreat}
+          scope={{ branchId, storeId }}
         />
 
     

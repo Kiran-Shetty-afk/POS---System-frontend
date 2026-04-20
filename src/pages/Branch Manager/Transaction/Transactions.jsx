@@ -1,22 +1,15 @@
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 
-import { Input } from "@/components/ui/input";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import {
-  Search,
-  Filter,
-  Calendar,
   Download,
-  Eye,
-  CreditCard,
   DollarSign,
   ArrowUpRight,
   ArrowDownLeft,
@@ -26,6 +19,7 @@ import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { useEffect } from "react";
 import { getOrdersByBranch } from "../../../Redux Toolkit/features/order/orderThunks";
+import { getRefundsByBranch } from "../../../Redux Toolkit/features/refund/refundThunks";
 import { Printer } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import { buildCsv, downloadCsvFile } from "@/utils/csvExport";
@@ -34,6 +28,7 @@ import { buildCsv, downloadCsvFile } from "@/utils/csvExport";
 
 export default function Transactions() {
   const { orders } = useSelector((state) => state.order);
+  const { refundsByBranch } = useSelector((state) => state.refund);
   const { branch } = useSelector((state) => state.branch);
   const dispatch = useDispatch();
   const { toast } = useToast();
@@ -42,18 +37,34 @@ export default function Transactions() {
 
   useEffect(() => {
     if (branch) {
-      dispatch(getOrdersByBranch({branchId:branch?.id}));
+      dispatch(getOrdersByBranch({ branchId: branch?.id }));
+      dispatch(getRefundsByBranch(branch?.id));
     }
   }, [branch, dispatch]);
 
+  const getNumericAmount = (value) => {
+    const amount = Number(value);
+    return Number.isFinite(amount) ? amount : 0;
+  };
+
   // Calculate totals
   const totalIncome = orders
-    .filter((t) => t.totalAmount > 0)
-    .reduce((sum, t) => sum + t.totalAmount, 0);
+    .reduce((sum, t) => {
+      const amount = getNumericAmount(t.totalAmount);
+      return amount > 0 ? sum + amount : sum;
+    }, 0);
 
-  const totalExpenses = orders
-    .filter((t) => t.totalAmount < 0)
-    .reduce((sum, t) => sum + Math.abs(t.totalAmount), 0);
+  const refundExpenses = refundsByBranch.reduce(
+    (sum, refund) => sum + Math.abs(getNumericAmount(refund.amount)),
+    0
+  );
+
+  const negativeOrderExpenses = orders.reduce((sum, t) => {
+    const amount = getNumericAmount(t.totalAmount);
+    return amount < 0 ? sum + Math.abs(amount) : sum;
+  }, 0);
+
+  const totalExpenses = refundExpenses + negativeOrderExpenses;
 
   const netAmount = totalIncome - totalExpenses || 0;
 

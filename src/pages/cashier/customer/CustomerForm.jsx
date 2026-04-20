@@ -17,7 +17,8 @@ import * as Yup from "yup";
 
 const CustomerForm = ({
   showCustomerForm,
-  setShowCustomerForm
+  setShowCustomerForm,
+  scope = {}
 }) => {
   const dispatch = useDispatch();
   const { loading } = useSelector((state) => state.customer);
@@ -42,7 +43,13 @@ const CustomerForm = ({
 
   const handleSubmit = async (values, { setSubmitting, resetForm }) => {
     try {
-      await dispatch(createCustomer(values)).unwrap();
+      await dispatch(
+        createCustomer({
+          ...values,
+          ...(scope.branchId ? { branchId: scope.branchId } : {}),
+          ...(scope.storeId ? { storeId: scope.storeId } : {}),
+        })
+      ).unwrap();
       toast.success("Customer created successfully!");
 
       // Reset form and close dialog

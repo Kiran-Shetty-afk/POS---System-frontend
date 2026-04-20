@@ -5,7 +5,8 @@ import {
   updateCustomer,
   deleteCustomer,
   getCustomerById,
-  getAllCustomers
+  getAllCustomers,
+  getScopedCustomers
 } from './customerThunks';
 
 const initialState = {
@@ -119,6 +120,17 @@ const customerSlice = createSlice({
         state.customers = action.payload;
       })
       .addCase(getAllCustomers.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(getScopedCustomers.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(getScopedCustomers.fulfilled, (state, action) => {
+        state.loading = false;
+        state.customers = action.payload;
+      })
+      .addCase(getScopedCustomers.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })
