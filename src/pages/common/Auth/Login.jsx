@@ -318,13 +318,13 @@ const Login = () => {
             </div>
 
             {/* Demo Account Info */}
-            <div className="mt-6 p-4 bg-muted rounded-lg">
-              <p className="text-sm text-muted-foreground text-center">
-                <strong>Demo:</strong> demo@pospro.com / demo123<br />
-                <span className="mt-2 inline-block">
-                  <strong>Cashier (seeded API):</strong> cashier@gmail.com / 12345678
-                  <br />
-                  <span className="text-xs">Requires at least one branch in the database (create via onboarding or store admin).</span>
+            <div className="mt-6 rounded-lg bg-muted p-4">
+              <p className="text-center text-sm text-muted-foreground">
+                <strong>Seeded admin:</strong> codewithzosh@gmail.com / codewithzosh
+                <br />
+                <span className="mt-2 inline-block text-xs">
+                  This backend currently seeds only the admin account by default. Cashier and staff
+                  logins must already exist in the database.
                 </span>
               </p>
             </div>
