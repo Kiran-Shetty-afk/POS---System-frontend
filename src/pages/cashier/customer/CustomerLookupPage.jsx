@@ -2,8 +2,8 @@ import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useToast } from "@/components/ui/use-toast";
 import {
+  addLoyaltyPoints,
   getAllCustomers,
-  
 } from "@/Redux Toolkit/features/customer/customerThunks";
 import {
   getOrdersByCustomer,
@@ -48,7 +48,7 @@ const CustomerLookupPage = () => {
   const [showAddPointsDialog, setShowAddPointsDialog] = useState(false);
   const [pointsToAdd, setPointsToAdd] = useState(0);
   const [showCustomerForm, setShowCustomerForm] = useState(false);
-  
+  const [submittingPoints, setSubmittingPoints] = useState(false);
 
   // Load customers on component mount
   useEffect(() => {
@@ -89,7 +89,7 @@ const CustomerLookupPage = () => {
     }
   };
 
-  const handleAddPoints = () => {
+  const handleAddPoints = async () => {
     const error = validatePoints(pointsToAdd);
     if (error) {
       toast({
@@ -100,16 +100,40 @@ const CustomerLookupPage = () => {
       return;
     }
 
-    // In a real app, this would update the customer's loyalty points in the database
-    toast({
-      title: "Points Added",
-      description: `${pointsToAdd} points added to ${
-        selectedCustomer.fullName || selectedCustomer.name
-      }'s account`,
-    });
+    if (!selectedCustomer?.id) {
+      toast({
+        title: "No Customer Selected",
+        description: "Please select a customer before adding loyalty points.",
+        variant: "destructive",
+      });
+      return;
+    }
 
-    setShowAddPointsDialog(false);
-    setPointsToAdd(0);
+    try {
+      setSubmittingPoints(true);
+      const updatedCustomer = await dispatch(
+        addLoyaltyPoints({ id: selectedCustomer.id, points: pointsToAdd })
+      ).unwrap();
+
+      setSelectedCustomer(updatedCustomer);
+      toast({
+        title: "Points Added",
+        description: `${pointsToAdd} points added to ${
+          updatedCustomer.fullName || updatedCustomer.name
+        }'s account`,
+      });
+
+      setShowAddPointsDialog(false);
+      setPointsToAdd(0);
+    } catch (apiError) {
+      toast({
+        title: "Unable to Add Points",
+        description: apiError || "Failed to update loyalty points",
+        variant: "destructive",
+      });
+    } finally {
+      setSubmittingPoints(false);
+    }
   };
 
 
@@ -176,6 +200,7 @@ const CustomerLookupPage = () => {
         customer={selectedCustomer}
         pointsToAdd={pointsToAdd}
         onPointsChange={setPointsToAdd}
+        submitting={submittingPoints}
         onAddPoints={handleAddPoints}
       />
 

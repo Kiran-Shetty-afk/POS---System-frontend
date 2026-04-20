@@ -1,5 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import {
+  addLoyaltyPoints,
   createCustomer,
   updateCustomer,
   deleteCustomer,
@@ -61,6 +62,25 @@ const customerSlice = createSlice({
         state.error = action.payload;
       })
 
+      // Add Loyalty Points
+      .addCase(addLoyaltyPoints.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(addLoyaltyPoints.fulfilled, (state, action) => {
+        state.loading = false;
+        const index = state.customers.findIndex(customer => customer.id === action.payload.id);
+        if (index !== -1) {
+          state.customers[index] = action.payload;
+        }
+        if (state.selectedCustomer && state.selectedCustomer.id === action.payload.id) {
+          state.selectedCustomer = action.payload;
+        }
+      })
+      .addCase(addLoyaltyPoints.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+
       // Delete Customer
       .addCase(deleteCustomer.pending, (state) => {
         state.loading = true;
@@ -114,4 +134,4 @@ const customerSlice = createSlice({
 });
 
 export const { clearCustomerState, clearSelectedCustomer } = customerSlice.actions;
-export default customerSlice.reducer; 
+export default customerSlice.reducer;

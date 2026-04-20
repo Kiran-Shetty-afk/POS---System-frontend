@@ -9,6 +9,7 @@ const AddPointsDialog = ({
   customer, 
   pointsToAdd, 
   onPointsChange, 
+  submitting = false,
   onAddPoints 
 }) => {
   return (
@@ -31,18 +32,21 @@ const AddPointsDialog = ({
               type="number"
               min="1"
               value={pointsToAdd}
+              disabled={submitting}
               onChange={(e) => onPointsChange(parseInt(e.target.value) || 0)}
             />
           </div>
         </div>
         
         <DialogFooter>
-          <Button variant="outline" onClick={onClose}>Cancel</Button>
-          <Button onClick={onAddPoints}>Add Points</Button>
+          <Button variant="outline" onClick={onClose} disabled={submitting}>Cancel</Button>
+          <Button onClick={onAddPoints} disabled={submitting}>
+            {submitting ? "Adding..." : "Add Points"}
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
   );
 };
 
-export default AddPointsDialog; 
+export default AddPointsDialog;

@@ -82,6 +82,43 @@ export const updateCustomer = createAsyncThunk(
   }
 );
 
+// Add Loyalty Points
+export const addLoyaltyPoints = createAsyncThunk(
+  'customer/addLoyaltyPoints',
+  async ({ id, points }, { rejectWithValue }) => {
+    try {
+      console.log('Updating loyalty points...', { customerId: id, points });
+
+      const headers = getAuthHeaders();
+      const res = await api.post(
+        `/api/customers/${id}/loyalty-points`,
+        { points },
+        { headers }
+      );
+
+      console.log('Customer loyalty points updated successfully:', {
+        customerId: res.data.id,
+        loyaltyPoints: res.data.loyaltyPoints,
+        response: res.data,
+      });
+
+      return res.data;
+    } catch (err) {
+      console.error('Failed to update loyalty points:', {
+        customerId: id,
+        points,
+        error: err.response?.data || err.message,
+        status: err.response?.status,
+        statusText: err.response?.statusText,
+      });
+
+      return rejectWithValue(
+        err.response?.data?.message || 'Failed to update loyalty points'
+      );
+    }
+  }
+);
+
 // 🔹 Delete Customer
 export const deleteCustomer = createAsyncThunk(
   'customer/delete',
@@ -160,4 +197,4 @@ export const getAllCustomers = createAsyncThunk(
       return rejectWithValue(err.response?.data?.message || 'Failed to fetch customers');
     }
   }
-); 
+);
