@@ -25,10 +25,13 @@ import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { getScopedCustomers } from "../../../Redux Toolkit/features/customer/customerThunks";
 import { clearCustomerOrders } from "../../../Redux Toolkit/features/order/orderSlice";
-import { getOrdersByCustomer } from "../../../Redux Toolkit/features/order/orderThunks";
+import {
+  getOrdersByBranch,
+  getOrdersByCustomer,
+} from "../../../Redux Toolkit/features/order/orderThunks";
 
 const Customers = () => {
-  const { customerOrders } = useSelector((state) => state.order);
+  const { customerOrders, orders } = useSelector((state) => state.order);
   const { customers } = useSelector((state) => state.customer);
   const { branch } = useSelector((state) => state.branch);
   const { userProfile } = useSelector((state) => state.user);
@@ -50,6 +53,7 @@ const Customers = () => {
   useEffect(() => {
     if (branchId) {
       dispatch(getScopedCustomers({ branchId }));
+      dispatch(getOrdersByBranch({ branchId }));
     }
   }, [branchId, dispatch]);
 
@@ -80,9 +84,13 @@ const Customers = () => {
       }
     : null;
 
-  const totalCustomerOrders = customers.reduce((sum, customer) => {
-    const orderCount = Number(customer.totalOrders);
-    return sum + (Number.isFinite(orderCount) ? orderCount : 0);
+  const visibleCustomerIds = new Set(customers.map((customer) => customer.id));
+
+  const totalCustomerOrders = orders.reduce((sum, order) => {
+    const customerId = order.customer?.id;
+    return customerId != null && visibleCustomerIds.has(customerId)
+      ? sum + 1
+      : sum;
   }, 0);
 
   const averageOrdersPerCustomer = customers.length
