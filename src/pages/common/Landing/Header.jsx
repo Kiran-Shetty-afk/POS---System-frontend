@@ -55,9 +55,9 @@ const Header = () => {
                 {activeDropdown === 'features' && (
                   <div className="absolute left-0 mt-2 w-48 bg-popover rounded-lg shadow-lg border border-border py-2 z-50">
                     <a href="#features" className="block px-4 py-2 text-sm text-popover-foreground hover:bg-accent hover:text-accent-foreground">Overview</a>
-                    <a href="#" className="block px-4 py-2 text-sm text-popover-foreground hover:bg-accent hover:text-accent-foreground">Inventory Management</a>
-                    <a href="#" className="block px-4 py-2 text-sm text-popover-foreground hover:bg-accent hover:text-accent-foreground">Billing & Checkout</a>
-                    <a href="#" className="block px-4 py-2 text-sm text-popover-foreground hover:bg-accent hover:text-accent-foreground">Analytics & Reports</a>
+                    <a href="#demo" className="block px-4 py-2 text-sm text-popover-foreground hover:bg-accent hover:text-accent-foreground">Inventory Management</a>
+                    <a href="#demo" className="block px-4 py-2 text-sm text-popover-foreground hover:bg-accent hover:text-accent-foreground">Billing & Checkout</a>
+                    <a href="#testimonials" className="block px-4 py-2 text-sm text-popover-foreground hover:bg-accent hover:text-accent-foreground">Analytics & Reports</a>
                   </div>
                 )}
               </div>
@@ -76,10 +76,10 @@ const Header = () => {
                 </button>
                 {activeDropdown === 'resources' && (
                   <div className="absolute left-0 mt-2 w-48 bg-popover rounded-lg shadow-lg border border-border py-2 z-50">
-                    <a href="#" className="block px-4 py-2 text-sm text-popover-foreground hover:bg-accent hover:text-accent-foreground">Help Center</a>
-                    <a href="#" className="block px-4 py-2 text-sm text-popover-foreground hover:bg-accent hover:text-accent-foreground">Documentation</a>
-                    <a href="#" className="block px-4 py-2 text-sm text-popover-foreground hover:bg-accent hover:text-accent-foreground">API Reference</a>
-                    <a href="#" className="block px-4 py-2 text-sm text-popover-foreground hover:bg-accent hover:text-accent-foreground">Blog</a>
+                    <a href="#faq" className="block px-4 py-2 text-sm text-popover-foreground hover:bg-accent hover:text-accent-foreground">Help Center</a>
+                    <a href="#features" className="block px-4 py-2 text-sm text-popover-foreground hover:bg-accent hover:text-accent-foreground">Documentation</a>
+                    <a href="#pricing" className="block px-4 py-2 text-sm text-popover-foreground hover:bg-accent hover:text-accent-foreground">API Reference</a>
+                    <a href="#testimonials" className="block px-4 py-2 text-sm text-popover-foreground hover:bg-accent hover:text-accent-foreground">Blog</a>
                   </div>
                 )}
               </div>
@@ -121,9 +121,9 @@ const Header = () => {
                   {activeDropdown === 'mobile-features' && (
                     <div className="mt-2 pl-8 space-y-2">
                       <a href="#features" className="block py-2 text-sm text-muted-foreground hover:text-primary">Overview</a>
-                      <a href="#" className="block py-2 text-sm text-muted-foreground hover:text-primary">Inventory Management</a>
-                      <a href="#" className="block py-2 text-sm text-muted-foreground hover:text-primary">Billing & Checkout</a>
-                      <a href="#" className="block py-2 text-sm text-muted-foreground hover:text-primary">Analytics & Reports</a>
+                      <a href="#demo" className="block py-2 text-sm text-muted-foreground hover:text-primary">Inventory Management</a>
+                      <a href="#demo" className="block py-2 text-sm text-muted-foreground hover:text-primary">Billing & Checkout</a>
+                      <a href="#testimonials" className="block py-2 text-sm text-muted-foreground hover:text-primary">Analytics & Reports</a>
                     </div>
                   )}
                 </div>
@@ -142,10 +142,10 @@ const Header = () => {
                   </button>
                   {activeDropdown === 'mobile-resources' && (
                     <div className="mt-2 pl-8 space-y-2">
-                      <a href="#" className="block py-2 text-sm text-muted-foreground hover:text-primary">Help Center</a>
-                      <a href="#" className="block py-2 text-sm text-muted-foreground hover:text-primary">Documentation</a>
-                      <a href="#" className="block py-2 text-sm text-muted-foreground hover:text-primary">API Reference</a>
-                      <a href="#" className="block py-2 text-sm text-muted-foreground hover:text-primary">Blog</a>
+                      <a href="#faq" className="block py-2 text-sm text-muted-foreground hover:text-primary">Help Center</a>
+                      <a href="#features" className="block py-2 text-sm text-muted-foreground hover:text-primary">Documentation</a>
+                      <a href="#pricing" className="block py-2 text-sm text-muted-foreground hover:text-primary">API Reference</a>
+                      <a href="#testimonials" className="block py-2 text-sm text-muted-foreground hover:text-primary">Blog</a>
                     </div>
                   )}
                 </div>

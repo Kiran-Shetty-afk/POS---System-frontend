@@ -86,7 +86,7 @@ export const ResetPasswordDialog = ({
         <div className="py-4">
           <p>
             Are you sure you want to reset the password for{" "}
-            <strong>{selectedEmployee.name}</strong>?
+            <strong>{selectedEmployee.fullName || selectedEmployee.name}</strong>?
           </p>
           <p className="text-sm text-gray-500 mt-2">
             A temporary password will be generated and sent to their email
@@ -112,11 +112,12 @@ export const PerformanceDialog = ({
   selectedEmployee,
 }) => {
   const { toast } = useToast();
+  const employeeName = selectedEmployee?.fullName || selectedEmployee?.name || "Employee";
 
   const handleExportPerformanceCsv = () => {
     if (!selectedEmployee) return;
     const date = new Date().toISOString().slice(0, 10);
-    const safeId = String(selectedEmployee.id ?? selectedEmployee.name ?? "employee").replace(
+    const safeId = String(selectedEmployee.id ?? employeeName ?? "employee").replace(
       /[^\w-]+/g,
       "_"
     );
@@ -167,7 +168,7 @@ export const PerformanceDialog = ({
       <DialogContent className="max-w-3xl">
         <DialogHeader>
           <DialogTitle>
-            Performance Summary - {selectedEmployee.name}
+            Performance Summary - {employeeName}
           </DialogTitle>
         </DialogHeader>
         <div className="py-4">

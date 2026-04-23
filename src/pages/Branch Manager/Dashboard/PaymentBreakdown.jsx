@@ -18,9 +18,9 @@ const PaymentBreakdown = () => {
             {paymentBreakdown && paymentBreakdown.length > 0 ? paymentBreakdown.map((payment, index) => (
               <div key={index} className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                    {getPaymentIcon(payment.type)}
+                    {getPaymentIcon(payment.type || payment.paymentType || payment.paymentMethod)}
                   {/* <CreditCard className="w-5 h-5 text-primary" /> */}
-                  <span>{payment.type}</span>
+                  <span>{payment.type || payment.paymentType || payment.paymentMethod || "-"}</span>
                 </div>
                 <div className="flex items-center gap-4">
                   <div className="w-32 h-2 bg-gray-100 rounded-full overflow-hidden">
@@ -29,7 +29,7 @@ const PaymentBreakdown = () => {
                       style={{ width: `${payment.percentage ?? 0}%` }}
                     ></div>
                   </div>
-                  <span className="text-sm font-medium">₹{payment.totalAmount?.toLocaleString() ?? "-"}</span>
+                  <span className="text-sm font-medium">₹{payment.totalAmount?.toLocaleString('en-IN') ?? "-"}</span>
                   <span className="text-xs text-gray-500">{payment.percentage ? `${payment.percentage}%` : ""}</span>
                   <span className="text-xs text-gray-500">{payment.transactionCount ? `(${payment.transactionCount} txns)` : ""}</span>
                 </div>

@@ -116,7 +116,7 @@ const BranchEmployees = () => {
   };
 
   const handleResetPassword = () => {
-    console.log(`Password reset for ${selectedEmployee.name}`);
+    console.log(`Password reset for ${selectedEmployee?.fullName || selectedEmployee?.name}`);
     setIsResetPasswordDialogOpen(false);
   };
 

@@ -4,6 +4,36 @@ All entries are dated and versioned for uniqueness.
 
 ---
 
+## brain-2026-04-22-034
+
+**Date:** 2026-04-22
+
+**Summary:** Updated the frontend production API fallback URL to the latest Railway public domain for the hosted backend.
+
+**Changed:** `src/utils/api.js`, `brain/CHANGELOG.md`
+
+---
+
+## brain-2026-04-22-033
+
+**Date:** 2026-04-22
+
+**Summary:** Updated the frontend production API fallback URL to the hosted Railway backend endpoint so non-dev builds target the deployed backend by default.
+
+**Changed:** `src/utils/api.js`, `brain/CHANGELOG.md`
+
+---
+
+## brain-2026-04-22-032
+
+**Date:** 2026-04-22
+
+**Summary:** Fixed onboarding step-2 redirect getting stuck on a loading spinner until manual reload. Root cause was `App` session restore only running on initial mount; after signup wrote JWT during the same session, profile hydration did not rerun, so `jwt && !userProfile` stayed on the restoring spinner. `App` now observes JWT changes and re-runs restore flow when token appears.
+
+**Changed:** `src/App.jsx`, `brain/CHANGELOG.md`
+
+---
+
 ## brain-2026-04-10-031
 
 **Date:** 2026-04-10

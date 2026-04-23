@@ -2,9 +2,9 @@ import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Phone, Mail, MapPin, Clock, ArrowRight, CheckCircle } from 'lucide-react';
 
-const ContactSection = () => {
+const ContactSection = ({ id = "contact" }) => {
   return (
-    <section className="py-16 bg-gradient-to-br from-primary to-primary-dark text-white overflow-hidden relative">
+    <section id={id} className="py-16 bg-gradient-to-br from-primary to-primary-dark text-white overflow-hidden relative">
       {/* Background Pattern */}
       <div className="absolute inset-0 z-0 opacity-10">
         <div className="grid grid-cols-10 h-full">

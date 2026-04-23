@@ -53,7 +53,7 @@ const LiveDemoSection = () => {
   };
 
   return (
-    <section className="py-16 bg-gray-50 overflow-hidden relative">
+    <section id="demo" className="py-16 bg-gray-50 overflow-hidden relative">
       {/* Background Pattern */}
       <div className="absolute inset-0 z-0 opacity-5">
         <div className="grid grid-cols-20 h-full">
@@ -111,7 +111,7 @@ const LiveDemoSection = () => {
             </div>
             
             <div className="mt-8">
-              <Button className="w-full group">
+              <Button className="w-full group" onClick={() => document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" })}>
                 Request Full Demo
                 <ChevronRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </Button>
@@ -458,7 +458,7 @@ const LiveDemoSection = () => {
             
             <div className="mt-6 text-center">
               <p className="text-gray-500 mb-4">Want to see more? Schedule a personalized demo with our team.</p>
-              <Button variant="outline" size="lg">
+              <Button variant="outline" size="lg" onClick={() => document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" })}>
                 Book a Live Demo
               </Button>
             </div>

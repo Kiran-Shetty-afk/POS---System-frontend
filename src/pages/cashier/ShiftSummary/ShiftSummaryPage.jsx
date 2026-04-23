@@ -29,8 +29,67 @@ const ShiftSummaryPage = () => {
     dispatch(getCurrentShiftProgress());
   }, [dispatch]);
 
+  useEffect(() => {
+    if (!currentShift && !loading && error) {
+      const retryTimer = setTimeout(() => {
+        dispatch(getCurrentShiftProgress());
+      }, 1500);
+      return () => clearTimeout(retryTimer);
+    }
+    return undefined;
+  }, [currentShift, loading, error, dispatch]);
+
   const handlePrintSummary = () => {
     setShowPrintDialog(false);
+    if (!currentShift) {
+      toast({
+        title: 'No shift to print',
+        description: 'Shift summary is not available yet.',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    const printWindow = window.open("", "_blank", "width=900,height=700");
+    if (!printWindow) {
+      toast({
+        title: 'Print blocked',
+        description: 'Please allow pop-ups to print the shift summary.',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    printWindow.document.write(`
+      <html>
+        <head>
+          <title>Shift Summary</title>
+          <style>
+            body { font-family: Arial, sans-serif; padding: 24px; }
+            h1 { margin-bottom: 8px; }
+            p { margin: 4px 0; }
+            .section { margin-top: 16px; padding-top: 12px; border-top: 1px solid #ddd; }
+          </style>
+        </head>
+        <body>
+          <h1>Cashier Shift Summary</h1>
+          <p><strong>Shift ID:</strong> ${currentShift.id ?? "-"}</p>
+          <p><strong>Start:</strong> ${currentShift.startTime ?? "-"}</p>
+          <p><strong>End:</strong> ${currentShift.endTime ?? "In progress"}</p>
+          <div class="section">
+            <p><strong>Total Sales:</strong> ₹${Number(currentShift.totalSales ?? 0).toLocaleString('en-IN')}</p>
+            <p><strong>Total Orders:</strong> ${currentShift.totalOrders ?? 0}</p>
+            <p><strong>Total Refunds:</strong> ₹${Number(currentShift.totalRefunds ?? 0).toLocaleString('en-IN')}</p>
+            <p><strong>Net Sales:</strong> ₹${Number(currentShift.netSales ?? 0).toLocaleString('en-IN')}</p>
+          </div>
+        </body>
+      </html>
+    `);
+    printWindow.document.close();
+    printWindow.focus();
+    printWindow.print();
+    printWindow.close();
+
     toast({
       title: 'Printing Shift Summary',
       description: 'Shift summary is being printed',

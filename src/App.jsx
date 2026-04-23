@@ -37,16 +37,17 @@ const App = () => {
   const { userProfile } = useSelector((state) => state.user);
   const { store } = useSelector((state) => state.store);
   useLogoutOnAuthHistoryBack();
+  const jwt = typeof window !== "undefined" ? localStorage.getItem("jwt") : null;
   const [sessionRestored, setSessionRestored] = useState(
-    () => typeof window === "undefined" || !localStorage.getItem("jwt")
+    () => typeof window === "undefined" || !jwt
   );
 
   useEffect(() => {
-    const jwt = localStorage.getItem("jwt");
     if (!jwt) {
       setSessionRestored(true);
       return;
     }
+    setSessionRestored(false);
     let cancelled = false;
     (async () => {
       try {
@@ -76,7 +77,7 @@ const App = () => {
     return () => {
       cancelled = true;
     };
-  }, [dispatch]);
+  }, [dispatch, jwt]);
 
   if (!sessionRestored) {
     return <SessionRestoringScreen />;
@@ -84,7 +85,6 @@ const App = () => {
 
   // After login, JWT is written before getUserProfile lands in Redux; sessionRestored may already
   // be true from the initial no-JWT mount — that frame used the logged-out route tree and /store → 404.
-  const jwt = typeof window !== "undefined" ? localStorage.getItem("jwt") : null;
   if (jwt && !userProfile) {
     return <SessionRestoringScreen />;
   }

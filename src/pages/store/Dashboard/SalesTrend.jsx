@@ -75,12 +75,20 @@ const SalesTrend = () => {
           month: "short",
           day: "numeric",
         }),
-        sales: item.totalAmount,
+        sales: item.totalAmount ?? item.totalSales ?? 0,
       }));
     } else if (salesTrends) {
-      return salesTrends.map((item) => ({
-        date: item.period,
-        sales: item.totalSales,
+      const trendPoints = Array.isArray(salesTrends)
+        ? salesTrends
+        : salesTrends?.points ?? [];
+      return trendPoints.map((item) => ({
+        date: item.date
+          ? new Date(item.date).toLocaleDateString("en-US", {
+              month: "short",
+              day: "numeric",
+            })
+          : "-",
+        sales: item.totalAmount ?? item.totalSales ?? 0,
       }));
     }
     return [];

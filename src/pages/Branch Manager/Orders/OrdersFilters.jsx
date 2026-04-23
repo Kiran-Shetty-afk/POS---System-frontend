@@ -1,5 +1,4 @@
 import React from "react";
-import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
@@ -7,7 +6,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Search, Filter } from "lucide-react";
+import { Filter } from "lucide-react";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
@@ -31,7 +30,7 @@ const OrdersFilters = () => {
       if (branchId) {
         const data = {
           branchId,
-          cashierId: filters.cashierId !== "all" ? filters.cashierId : undefined,
+          cashierId: filters.cashierId !== "all" ? Number(filters.cashierId) : undefined,
           paymentType: paymentModeMap[filters.paymentMode],
           status: statusMap[filters.status],
         };
@@ -84,7 +83,7 @@ const OrdersFilters = () => {
             <SelectItem value="all">All Cashiers</SelectItem>
             {employees &&
               employees.map((emp) => (
-                <SelectItem key={emp.id} value={emp.id}>
+                <SelectItem key={emp.id} value={String(emp.id)}>
                   {emp.fullName}
                 </SelectItem>
               ))}

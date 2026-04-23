@@ -17,8 +17,6 @@ import {
 import {
   SearchIcon,
   PrinterIcon,
-  EyeIcon,
-  RotateCcwIcon,
   CalendarIcon,
   Loader2,
   RefreshCw,
@@ -69,6 +67,37 @@ const OrderHistoryPage = () => {
 
   const weekStart = new Date(today);
   weekStart.setDate(today.getDate() - today.getDay());
+
+  const monthStart = new Date(today.getFullYear(), today.getMonth(), 1);
+
+  const filteredOrders = (orders || []).filter((order) => {
+    const searchable = `${order.id ?? ""} ${order.customer?.fullName ?? ""}`.toLowerCase();
+    if (searchTerm && !searchable.includes(searchTerm.toLowerCase())) {
+      return false;
+    }
+
+    if (!order.createdAt) return dateFilter === "all";
+    const orderDate = new Date(order.createdAt);
+
+    if (dateFilter === "today") {
+      return orderDate >= today;
+    }
+    if (dateFilter === "week") {
+      return orderDate >= weekStart;
+    }
+    if (dateFilter === "month") {
+      return orderDate >= monthStart;
+    }
+    if (dateFilter === "custom") {
+      if (!customDateRange.start || !customDateRange.end) return true;
+      const start = new Date(customDateRange.start);
+      start.setHours(0, 0, 0, 0);
+      const end = new Date(customDateRange.end);
+      end.setHours(23, 59, 59, 999);
+      return orderDate >= start && orderDate <= end;
+    }
+    return true;
+  });
 
   const handleViewOrder = (order) => {
     setSelectedOrder(order);
@@ -211,9 +240,9 @@ const OrderHistoryPage = () => {
             <Loader2 className="animate-spin h-16 w-16 text-primary" />
             <p className="mt-4">Loading orders...</p>
           </div>
-        ) : orders.length > 0 ? (
+        ) : filteredOrders.length > 0 ? (
           <OrderTable
-            orders={orders}
+            orders={filteredOrders}
             handleInitiateReturn={handleInitiateReturn}
             handlePrintInvoice={handlePrintInvoice}
             handleViewOrder={handleViewOrder}

@@ -72,7 +72,7 @@ const DashboardStats = () => {
     },
     { 
       title: "Total Employees", 
-      value: storeOverview?.totalEmployees || 0, 
+      value: storeOverview?.totalEmployees ?? storeOverview?.employeesCount ?? 0, 
       icon: <Users className="w-8 h-8 text-emerald-500" />, 
       change: formatChange(storeOverview?.totalEmployees, storeOverview?.previousPeriodEmployees),
       loading: loading

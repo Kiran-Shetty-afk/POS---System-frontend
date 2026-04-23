@@ -23,19 +23,19 @@ const Footer = () => {
               boost sales, and enhance customer experiences.
             </p>
             <div className="flex space-x-4 mb-6">
-              <a href="#" className="text-muted-foreground hover:text-foreground transition-colors">
+              <a href="#contact" className="text-muted-foreground hover:text-foreground transition-colors">
                 <Facebook className="h-5 w-5" />
               </a>
-              <a href="#" className="text-muted-foreground hover:text-foreground transition-colors">
+              <a href="#pricing" className="text-muted-foreground hover:text-foreground transition-colors">
                 <Twitter className="h-5 w-5" />
               </a>
-              <a href="#" className="text-muted-foreground hover:text-foreground transition-colors">
+              <a href="#features" className="text-muted-foreground hover:text-foreground transition-colors">
                 <Instagram className="h-5 w-5" />
               </a>
-              <a href="#" className="text-muted-foreground hover:text-foreground transition-colors">
+              <a href="#testimonials" className="text-muted-foreground hover:text-foreground transition-colors">
                 <Linkedin className="h-5 w-5" />
               </a>
-              <a href="#" className="text-muted-foreground hover:text-foreground transition-colors">
+              <a href="#demo" className="text-muted-foreground hover:text-foreground transition-colors">
                 <Youtube className="h-5 w-5" />
               </a>
             </div>
@@ -60,12 +60,12 @@ const Footer = () => {
           <div>
             <h4 className="text-foreground font-medium text-lg mb-4">Quick Links</h4>
             <ul className="space-y-2">
-              <li><a href="#" className="text-muted-foreground hover:text-foreground transition-colors">Home</a></li>
-              <li><a href="#" className="text-muted-foreground hover:text-foreground transition-colors">About Us</a></li>
-              <li><a href="#" className="text-muted-foreground hover:text-foreground transition-colors">Features</a></li>
-              <li><a href="#" className="text-muted-foreground hover:text-foreground transition-colors">Pricing</a></li>
-              <li><a href="#" className="text-muted-foreground hover:text-foreground transition-colors">Testimonials</a></li>
-              <li><a href="#" className="text-muted-foreground hover:text-foreground transition-colors">Contact</a></li>
+              <li><a href="/" className="text-muted-foreground hover:text-foreground transition-colors">Home</a></li>
+              <li><a href="#features" className="text-muted-foreground hover:text-foreground transition-colors">About Us</a></li>
+              <li><a href="#features" className="text-muted-foreground hover:text-foreground transition-colors">Features</a></li>
+              <li><a href="#pricing" className="text-muted-foreground hover:text-foreground transition-colors">Pricing</a></li>
+              <li><a href="#testimonials" className="text-muted-foreground hover:text-foreground transition-colors">Testimonials</a></li>
+              <li><a href="#contact" className="text-muted-foreground hover:text-foreground transition-colors">Contact</a></li>
             </ul>
           </div>
           
@@ -73,12 +73,12 @@ const Footer = () => {
           <div>
             <h4 className="text-foreground font-medium text-lg mb-4">Resources</h4>
             <ul className="space-y-2">
-              <li><a href="#" className="text-muted-foreground hover:text-foreground transition-colors">Blog</a></li>
-              <li><a href="#" className="text-muted-foreground hover:text-foreground transition-colors">Help Center</a></li>
-              <li><a href="#" className="text-muted-foreground hover:text-foreground transition-colors">Documentation</a></li>
-              <li><a href="#" className="text-muted-foreground hover:text-foreground transition-colors">API Reference</a></li>
-              <li><a href="#" className="text-muted-foreground hover:text-foreground transition-colors">Download App</a></li>
-              <li><a href="#" className="text-muted-foreground hover:text-foreground transition-colors">Partners</a></li>
+              <li><a href="#testimonials" className="text-muted-foreground hover:text-foreground transition-colors">Blog</a></li>
+              <li><a href="#faq" className="text-muted-foreground hover:text-foreground transition-colors">Help Center</a></li>
+              <li><a href="#features" className="text-muted-foreground hover:text-foreground transition-colors">Documentation</a></li>
+              <li><a href="#pricing" className="text-muted-foreground hover:text-foreground transition-colors">API Reference</a></li>
+              <li><a href="#demo" className="text-muted-foreground hover:text-foreground transition-colors">Download App</a></li>
+              <li><a href="#contact" className="text-muted-foreground hover:text-foreground transition-colors">Partners</a></li>
             </ul>
           </div>
           
@@ -110,10 +110,10 @@ const Footer = () => {
               <p>&copy; {currentYear} POSPro. All rights reserved.</p>
             </div>
             <div className="flex space-x-6 mt-4 md:mt-0 text-sm">
-              <a href="#" className="text-muted-foreground hover:text-foreground transition-colors">Terms of Service</a>
-              <a href="#" className="text-muted-foreground hover:text-foreground transition-colors">Privacy Policy</a>
-              <a href="#" className="text-muted-foreground hover:text-foreground transition-colors">Cookie Policy</a>
-              <a href="#" className="text-muted-foreground hover:text-foreground transition-colors">Sitemap</a>
+              <a href="#contact" className="text-muted-foreground hover:text-foreground transition-colors">Terms of Service</a>
+              <a href="#contact" className="text-muted-foreground hover:text-foreground transition-colors">Privacy Policy</a>
+              <a href="#contact" className="text-muted-foreground hover:text-foreground transition-colors">Cookie Policy</a>
+              <a href="#features" className="text-muted-foreground hover:text-foreground transition-colors">Sitemap</a>
             </div>
           </div>
         </div>

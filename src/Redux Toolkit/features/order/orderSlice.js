@@ -54,11 +54,19 @@ const orderSlice = createSlice({
         state.selectedOrder = action.payload;
       })
 
+      .addCase(getOrdersByBranch.pending, (state) => {
+        state.loading = true;
+      })
       .addCase(getOrdersByBranch.fulfilled, (state, action) => {
+        state.loading = false;
         state.orders = action.payload;
       })
 
+      .addCase(getOrdersByCashier.pending, (state) => {
+        state.loading = true;
+      })
       .addCase(getOrdersByCashier.fulfilled, (state, action) => {
+        state.loading = false;
         state.orders = action.payload;
         console.log("get order by cashier ", action.payload);
       })

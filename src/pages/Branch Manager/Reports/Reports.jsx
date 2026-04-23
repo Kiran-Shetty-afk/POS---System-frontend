@@ -46,7 +46,7 @@ const Reports = () => {
 
   const paymentData = paymentBreakdown?.map((item) => ({
     name: item.type,
-    value: item.percentage,
+    value: item.totalAmount ?? 0,
   })) || [];
 
   const paymentConfig = paymentBreakdown?.reduce((acc, item, idx) => {
@@ -347,40 +347,46 @@ const Reports = () => {
                 </div>
               </CardHeader>
               <CardContent>
-                <ChartContainer config={paymentConfig}>
-                  <ResponsiveContainer width="100%" height={400}>
-                    <RPieChart>
-                      <Pie
-                        data={paymentData}
-                        cx="50%"
-                        cy="50%"
-                        labelLine={false}
-                        label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
-                        outerRadius={80}
-                        fill="#8884d8"
-                        dataKey="value"
-                      >
-                        {paymentData.map((entry, index) => (
-                          <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                        ))}
-                      </Pie>
-                      <ChartTooltip
-                        content={({ active, payload }) => (
-                          <ChartTooltipContent
-                            active={active}
-                            payload={payload}
-                            formatter={(value) => [`${value}%`, "Percentage"]}
-                          />
-                        )}
-                      />
-                      <ChartLegend
-                        content={({ payload }) => (
-                          <ChartLegendContent payload={payload} />
-                        )}
-                      />
-                    </RPieChart>
-                  </ResponsiveContainer>
-                </ChartContainer>
+                {paymentData.length === 0 ? (
+                  <div className="h-[400px] flex items-center justify-center text-muted-foreground">
+                    No payment data available
+                  </div>
+                ) : (
+                  <ChartContainer config={paymentConfig}>
+                    <ResponsiveContainer width="100%" height={400}>
+                      <RPieChart>
+                        <Pie
+                          data={paymentData}
+                          cx="50%"
+                          cy="50%"
+                          labelLine={false}
+                          label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
+                          outerRadius={80}
+                          fill="#8884d8"
+                          dataKey="value"
+                        >
+                          {paymentData.map((entry, index) => (
+                            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                          ))}
+                        </Pie>
+                        <ChartTooltip
+                          content={({ active, payload }) => (
+                            <ChartTooltipContent
+                              active={active}
+                              payload={payload}
+                              formatter={(value) => [formatCurrency(Number(value || 0)), "Amount"]}
+                            />
+                          )}
+                        />
+                        <ChartLegend
+                          content={({ payload }) => (
+                            <ChartLegendContent payload={payload} />
+                          )}
+                        />
+                      </RPieChart>
+                    </ResponsiveContainer>
+                  </ChartContainer>
+                )}
               </CardContent>
             </Card>
           </div>
@@ -452,40 +458,46 @@ const Reports = () => {
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <ChartContainer config={categoryConfig}>
-                  <ResponsiveContainer width="100%" height={300}>
-                    <RPieChart>
-                      <Pie
-                        data={categoryData}
-                        cx="50%"
-                        cy="50%"
-                        labelLine={false}
-                        label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
-                        outerRadius={80}
-                        fill="#8884d8"
-                        dataKey="value"
-                      >
-                        {categoryData.map((entry, index) => (
-                          <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                        ))}
-                      </Pie>
-                      <ChartTooltip
-                        content={({ active, payload }) => (
-                          <ChartTooltipContent
-                            active={active}
-                            payload={payload}
-                            formatter={(value) => [`${value}%`, "Sales Percentage"]}
-                          />
-                        )}
-                      />
-                      <ChartLegend
-                        content={({ payload }) => (
-                          <ChartLegendContent payload={payload} />
-                        )}
-                      />
-                    </RPieChart>
-                  </ResponsiveContainer>
-                </ChartContainer>
+                {categoryData.length === 0 ? (
+                  <div className="h-[300px] flex items-center justify-center text-muted-foreground">
+                    No category sales data available
+                  </div>
+                ) : (
+                  <ChartContainer config={categoryConfig}>
+                    <ResponsiveContainer width="100%" height={300}>
+                      <RPieChart>
+                        <Pie
+                          data={categoryData}
+                          cx="50%"
+                          cy="50%"
+                          labelLine={false}
+                          label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
+                          outerRadius={80}
+                          fill="#8884d8"
+                          dataKey="value"
+                        >
+                          {categoryData.map((entry, index) => (
+                            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                          ))}
+                        </Pie>
+                        <ChartTooltip
+                          content={({ active, payload }) => (
+                            <ChartTooltipContent
+                              active={active}
+                              payload={payload}
+                              formatter={(value) => [formatCurrency(Number(value || 0)), "Sales"]}
+                            />
+                          )}
+                        />
+                        <ChartLegend
+                          content={({ payload }) => (
+                            <ChartLegendContent payload={payload} />
+                          )}
+                        />
+                      </RPieChart>
+                    </ResponsiveContainer>
+                  </ChartContainer>
+                )}
 
                 <div className="space-y-4">
                   {categoryData.map((category, index) => (
